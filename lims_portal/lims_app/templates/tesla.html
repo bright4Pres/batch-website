@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Antuilan 2026</title>
+  <link rel="stylesheet" href="https://public.codepenassets.com/css/normalize-5.0.0.min.css">
+  <link rel="stylesheet" href="../static/Scripts/index.css">
+  <link rel="icon" href="../static/home_logo.png">
+  <style>
+    /* card grid */
+    #main-content {
+        padding: 20px;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+    .col-12, .col-sm-6, .col-md-4, .col-lg-3 {
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    .col-12 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    @media (min-width: 576px) {
+        .col-sm-6 {
+            flex: 0 0 50%;
+            max-width: 50%;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .col-md-4 {
+            flex: 0 0 33.333333%;
+            max-width: 33.333333%;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .col-lg-3 {
+            flex: 0 0 25%;
+            max-width: 25%;
+        }
+    }
+
+    .card {
+        width: 100%;
+        background: rgba(255, 255, 255);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        box-shadow:
+            0 4px 8px rgba(0, 0, 0, 0.2),
+            0 8px 16px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+        border-radius: 15px;
+        cursor: pointer;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .card img{
+        object-fit: cover;
+        border-radius: 15px;
+        width: 100%;
+    }
+    .card-body {
+        color: black;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 15px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .scholar-count {
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.2rem;
+    }
+
+    /* Modal styles */
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(5px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal-content {
+        background: rgba(255, 207, 140, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        width: 85%;
+        max-height: 85vh;
+        border-radius: 10px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        color: white;
+    }
+
+    .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid rgba(255, 207, 140, 0.2);
+    }
+
+    .modal-body {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .modal-image {
+        flex: 1;
+        max-width: 50%;
+        padding: 20px;
+    }
+
+    .modal-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 5px;
+    }
+
+    .modal-details {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .modal-comments {
+        padding: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .comment-form {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .comment-form input {
+        flex: 1;
+        padding: 8px;
+        border-radius: 5px;
+        border: none;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+
+    .comment-form button {
+        padding: 8px 15px;
+        border-radius: 5px;
+        border: none;
+        background: #4CAF50;
+        color: white;
+        cursor: pointer;
+    }
+
+    .comment {
+        margin-bottom: 10px;
+        margin-top: 20px;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+    }
+
+    .comment-user {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 30px;
+        color: white;
+        cursor: pointer;
+        background: none;
+        border: none;
+    }
+  </style>
+</head>
+<body>
+<div class="footer">
+{% include 'partials/navbar.html' %}
+<div id="main-content" class="container-fluid">
+      <p class="scholar-count">Scholar count: {{ scholar|length }}</p>
+      <div class="row">
+          {% for s in scholar %}
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+              <div class="card shadow-lg h-100" onclick="openModal('{{ s.name }}', '{{ s.description }}', '{{ s.image.url }}')">
+                  <img src="{{s.image.url}}" class="card-img-top" style="height:220px;" alt='Scholar image'>
+                  <div class="card-body">
+                      <h3 class="card-title">{{s.name | title}}</h3>
+                      <p class="card-text">{{s.description | title}}</p>
+                  </div>
+              </div>
+          </div>
+          {% endfor %}
+      </div>
+  </div>
+</div>
+
+<!-- modal -->
+<div class="modal-overlay" id="modalOverlay">
+    <button class="close-modal" onclick="closeModal()">&times;</button>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalScholarName"></h2>
+        </div>
+        <div class="modal-body">
+            <div class="modal-image">
+                <img id="modalScholarImage" src="" alt="Scholar image">
+            </div>
+            <div class="modal-details">
+            <h4>Comments</h4>
+            <form class="comment-form" onsubmit="submitComment(event)">
+                <input type="text" name="username" id="commentUsername" placeholder="Your name" required>
+                <input type="text" name="comment" id="commentText" placeholder="Your comment" required>
+                <button type="submit">Post</button>
+            </form>
+                <p id="commentsContainer"></p>
+            </div>
+        </div>
+        <div class="modal-comments">
+            <div id="modalScholarDescription">
+                <!-- Comments will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- partials? -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js'></script>
+<script  src="../static/Scripts/index.js"></script>
+
+<script>
+    let currentScholar = '';
+
+    function openModal(name, description, imageUrl) {
+        currentScholar = name;
+        document.getElementById('modalScholarName').textContent = name;
+        document.getElementById('modalScholarDescription').textContent = description;
+        document.getElementById('modalScholarImage').src = imageUrl;
+        document.getElementById('modalOverlay').classList.add('active');
+
+        // fetch and load comment for scholar_name
+        loadComments(name);
+    }
+
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('active');
+    }
+
+    function loadComments(scholarName) {
+        // fetch comments from server for scholar
+        fetch(`/get-comments?scholar=${encodeURIComponent(scholarName)}`)
+            .then(response => response.json())
+            .then(comments => {
+                const container = document.getElementById('commentsContainer');
+                container.innerHTML = '';
+
+                if (comments.length === 0) {
+                    container.innerHTML = '<p> no comments pa, be the first! </p>';
+                    return;
+                }
+
+                comments.forEach(comment => {
+                    const commentDiv = document.createElement('div');
+                    commentDiv.className = 'comment';
+                    commentDiv.innerHTML = `
+                        <div class="comment-user"> Username: ${comment.username}</div>
+                        <div class="comment-text"> Comment: ${comment.comment}</div>
+                    `;
+                    container.appendChild(commentDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading comments:', error);
+            });
+    }
+
+function submitComment(event) {
+    event.preventDefault();
+
+    const form = event.target;
+    const formData = new FormData(form);
+    formData.append('targetScholar', currentScholar);
+
+    fetch('/add-comment/', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (response.redirected) {
+            throw new Error('Request was redirected - check URL');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (!data.success) throw new Error(data.error);
+        form.reset();
+        loadComments(currentScholar);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to submit: ' + error.message);
+    });
+}
+
+    // Helper function to get CSRF token
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+</body>
+</html>

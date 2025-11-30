@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>ANTUILAN 2026</title>
+  <link rel="stylesheet" href="https://public.codepenassets.com/css/normalize-5.0.0.min.css">
+  <link rel="stylesheet" href="../static/Scripts/index.css">
+  <link rel="icon" href="../static/home_logo.png">
+</head>
+<body>
+<div class="footer">
+{% include 'partials/navbar.html' %}
+  <!-- Sticky WebGL container this was a copy and paste dont ask dude -->
+  <div class="sticky-container" id="stickyContainer">
+    <div class="webgl-section" id="webglSection">
+      <div class="canvas-container" id="canvasContainer">
+        <canvas id="space"></canvas>
+        <div class="animated-text" id="animatedText">
+        Antuilan<br/> Batch 2026 <br/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 100vh section -->
+  <div class="additional-section section-transition" id="additionalSection">
+    <div class="additional-content" id="additionalContent" style="font-family: 'Space Mono', sans-serif;">
+      <h2>Antuilan</h2>
+      <p>It seems you're asking about "Antuilan" in the Philippines, but this term doesn't correspond to any well-known place, word, or cultural reference in the country. Here are some possibilities:</p>
+      <p>Possible Misspelling – You might be referring to:
+
+Antipolo (a city in Rizal province, near Manila).
+
+Antique (a province in the Western Visayas region).
+
+Antulang (a beach resort in Negros Oriental).
+
+</p>
+      <p>Local or Obscure Term – "Antuilan" could be a:
+
+Rare barangay, sitio, or unofficial local name.
+
+Family name (though uncommon).
+
+Misheard or dialectal term (e.g., from Cebuano, Ilocano, or other languages).
+
+</p>
+    </div>
+  </div>
+</div>
+
+<div style="font-family: 'Space Mono', sans-serif;">
+{% include 'partials/slider.html' %}
+</div>
+<!-- partials? -->
+<script src='https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js'></script>
+<script src='https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js'></script>
+<script  src="../static/Scripts/index.js"></script>
+</body>
+</html>

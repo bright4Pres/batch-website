@@ -1,0 +1,66 @@
+<!-- partials/slider.html -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+<link rel="stylesheet" href="../../static/Scripts/slider.css">"
+<section class="game-section">
+  <div class="owl-carousel custom-carousel owl-theme">
+    <div class="item active" style="background-image: url(../../static/batcher.jpg);">
+      <div class="item-desc">
+        <h3>This was Joe idk when</h3>
+        <p> Mama mia
+        </p>
+      </div>
+    </div>
+    <div class="item" style="background-image: url(../../static/batcher2.jpg);">
+      <div class="item-desc">
+        <h3>haha si markin</h3>
+        <p> rick and morty
+        </p>
+      </div>
+    </div>
+    <div class="item" style="background-image: url(../../static/batcher3.jpg);">
+      <div class="item-desc">
+        <h3>Si joe napud</h3>
+        <p>woah rick
+        </p>
+      </div>
+    </div>
+    <div class="item" style="background-image: url(../../static/batcher4.jpg);">
+      <div class="item-desc">
+        <h3>idk this picture</h3>
+        <p>hachacha
+      </div>
+    </div>
+    <div class="item" style="background-image: url(../../static/batcher5.jpg);">
+      <div class="item-desc">
+        <h3>Ich Bin ein shein</h3>
+        <p> bazinga
+        </p>
+      </div>
+    </div>
+    <div class="item" style="background-image: url(../../static/batcher6.jpg);">
+      <div class="item-desc">
+        <h3>roleplays</h3>
+        <p>bababooey
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+<script>
+  // Initialize Owl Carousel
+  $(document).ready(function() {
+    $(".custom-carousel").owlCarousel({
+      autoWidth: true,
+      loop: true
+    });
+
+    $(".custom-carousel .item").click(function() {
+      $(".custom-carousel .item").not($(this)).removeClass("active");
+      $(this).toggleClass("active");
+    });
+  });
+</script>
