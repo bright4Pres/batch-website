@@ -131,6 +131,7 @@ dmypy.json
 # IDE specific files
 .vscode/
 .idea/
+.idea
 *.swp
 *.swo
 *~
