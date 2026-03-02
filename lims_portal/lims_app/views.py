@@ -57,21 +57,30 @@ def send_private_message(request):
             )
             msg.save()
 
+            # Build recipient list: student's email + admin
+            recipients = [settings.EMAIL_HOST_USER]
+            try:
+                scholar = scholarList.objects.get(name=target_scholar)
+                if scholar.email:
+                    recipients.insert(0, scholar.email)
+            except scholarList.DoesNotExist:
+                pass
+
             # Send email notification
-            reply_info = f'Their email: {sender_email}' if sender_email else 'No email provided'
+            reply_info = f'Reply to them: {sender_email}' if sender_email else 'No reply email provided'
             email_body = (
-                f'You received a private message on Batch 2026!\n\n'
-                f'For: {target_scholar}\n'
+                f'Hi {target_scholar},\n\n'
+                f'Someone sent you a private message on Batch 2026!\n\n'
                 f'From: {sender_name}\n'
                 f'{reply_info}\n\n'
                 f'Message:\n{message}\n\n'
-                f'---\nView all messages in the admin panel.'
+                f'---\nThis message is also saved in the admin panel.'
             )
             send_mail(
                 subject=f'[Batch 2026] Private message for {target_scholar}',
                 message=email_body,
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[settings.EMAIL_HOST_USER],
+                recipient_list=recipients,
                 fail_silently=True,
             )
 
