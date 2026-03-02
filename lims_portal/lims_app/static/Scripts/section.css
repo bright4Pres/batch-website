@@ -577,6 +577,11 @@ body {
 
 /* --- Small tablet / large phone (≤640px) --- */
 @media (max-width: 640px) {
+  /* hide the 3 doodles that cluster in the middle/bottom on short hero */
+  .doodle-3, .doodle-4, .doodle-5 { display: none; }
+  /* pin the two remaining ones tight to the top corners */
+  .doodle-1 { top: 8px; left: 8px; width: 36px; height: 50px; }
+  .doodle-2 { top: 8px; right: 8px; width: 38px; height: 38px; }
   .section-topnav {
     flex-direction: column;
     align-items: flex-start;
