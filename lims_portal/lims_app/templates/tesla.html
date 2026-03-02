@@ -201,7 +201,7 @@ function submitComment(e) {
     .then(function(r) { return r.json(); })
     .then(function(data) {
       if (data.success) {
-        showToast('Comment posted!', 'success');
+        showToast('coment oposted', 'success');
         document.getElementById('cText').value = '';
         loadComments(currentScholar);
       } else {
