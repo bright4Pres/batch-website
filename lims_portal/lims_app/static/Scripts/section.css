@@ -583,7 +583,21 @@ body {
     border-radius: 12px 12px 0 0;
     max-height: 92vh;
   }
-  .modal-top { flex-direction: column; padding: 20px 16px 14px; }
+  /* sticky close bar — stays visible no matter how far you scroll */
+  .modal-close-btn {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    padding: 10px 14px 8px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--accent-light);
+    z-index: 20;
+    font-size: 1.7rem;
+  }
+  .modal-top { flex-direction: column; padding: 16px 16px 14px; }
   .modal-photo-wrap { flex: none; width: 100%; }
   .modal-photo-wrap img { height: 200px; }
   .modal-info h2 { font-size: 1.6rem; }
@@ -608,7 +622,6 @@ body {
   .section-hero .subtitle { font-size: 0.95rem; }
   .profile-overlay { padding: 0; }
   .profile-modal { border-radius: 14px 14px 0 0; max-height: 96vh; }
-  .modal-close-btn { font-size: 1.5rem; top: 10px; right: 12px; }
   .modal-photo-wrap img { height: 165px; }
   .modal-info h2 { font-size: 1.35rem; }
   .modal-top { padding: 16px 14px 12px; gap: 14px; }
