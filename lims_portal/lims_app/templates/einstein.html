@@ -24,6 +24,35 @@
 
 <!-- ===== HERO ===== -->
 <section class="section-hero">
+  <div class="hero-doodles" aria-hidden="true">
+    <!-- heart -->
+    <svg class="doodle doodle-1" viewBox="0 0 44 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22 36S4 25 4 13a10 10 0 0 1 18-6 10 10 0 0 1 18 6c0 12-18 23-18 23z" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="var(--accent-light)" fill-opacity="0.6"/>
+    </svg>
+    <!-- 4-point sparkle star -->
+    <svg class="doodle doodle-2" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22 3 Q24 20 41 22 Q24 24 22 41 Q20 24 3 22 Q20 20 22 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="var(--accent-light)" fill-opacity="0.5"/>
+    </svg>
+    <!-- squiggle -->
+    <svg class="doodle doodle-3" viewBox="0 0 64 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 12 Q14 4 24 12 Q34 20 44 12 Q54 4 60 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+    </svg>
+    <!-- flower -->
+    <svg class="doodle doodle-4" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="22" cy="22" r="5" fill="currentColor" opacity="0.5"/>
+      <ellipse cx="22" cy="11" rx="4" ry="7" fill="currentColor" opacity="0.35"/>
+      <ellipse cx="22" cy="11" rx="4" ry="7" transform="rotate(60 22 22)" fill="currentColor" opacity="0.35"/>
+      <ellipse cx="22" cy="11" rx="4" ry="7" transform="rotate(120 22 22)" fill="currentColor" opacity="0.35"/>
+      <ellipse cx="22" cy="11" rx="4" ry="7" transform="rotate(180 22 22)" fill="currentColor" opacity="0.35"/>
+      <ellipse cx="22" cy="11" rx="4" ry="7" transform="rotate(240 22 22)" fill="currentColor" opacity="0.35"/>
+      <ellipse cx="22" cy="11" rx="4" ry="7" transform="rotate(300 22 22)" fill="currentColor" opacity="0.35"/>
+    </svg>
+    <!-- loopy arrow -->
+    <svg class="doodle doodle-5" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 38 Q10 10 30 20 Q44 26 36 10" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M31 4 L36 10 L42 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
   <h1>Section Einstein</h1>
   <p class="subtitle">curious minds, big dreams, louder laughs &mdash; always.</p>
   <div class="scholar-count">{{ scholar|length }} scholar{{ scholar|length|pluralize }} in this section</div>
@@ -50,8 +79,10 @@
 <!-- ===== PROFILE MODAL ===== -->
 <div class="profile-overlay" id="profileOverlay">
   <div class="profile-modal">
-    <button class="modal-close-btn" onclick="closeProfile()">&times;</button>
-
+    <div class="modal-header">
+      <button class="modal-close-btn" onclick="closeProfile()" aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
     <div class="modal-top">
       <div class="modal-photo-wrap">
         <img id="modalImg" src="" alt="Student photo">
@@ -104,6 +135,7 @@
         </form>
       </div>
     </div>
+    </div><!-- /.modal-body -->
   </div>
 </div>
 
