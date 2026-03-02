@@ -70,7 +70,7 @@ def send_private_message(request):
             reply_info = f'Reply to them: {sender_email}' if sender_email else 'No reply email provided'
             email_body = (
                 f'Hi {target_scholar},\n\n'
-                f'Someone sent you a palangka!\n\n'
+                f'Someone sent you a palanca!\n\n'
                 f'From: {sender_name}\n'
                 f'{reply_info}\n\n'
                 f'Message:\n{message}\n\n'
