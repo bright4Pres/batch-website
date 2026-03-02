@@ -117,10 +117,7 @@
         transparent 8px, transparent 22px
       );
     }
-    /* show CSS road strip only on mobile */
-    @media (max-width: 700px) {
-      #road-strip { display: block; }
-    }
+    /* road strip stays hidden on all sizes — 3D road handles it */
 
     /* ══════════════════════════════════════
        SLIDE-CONTENT CARDS (scrapbook style)
@@ -361,9 +358,6 @@
       gap: 8px;
       z-index: 42;
     }
-    @media (max-width: 700px) {
-      #panel-dots { bottom: 72px; }
-    }
     .pdot {
       width: 8px; height: 8px;
       border-radius: 50%;
@@ -396,36 +390,42 @@
     }
 
     /* ══════════════════════════════════════
-       MOBILE — simple vertical stack
+       MOBILE / SMALL SCREEN tweaks
+       (Three.js hall still runs — same experience)
     ══════════════════════════════════════ */
-    @media (max-width: 700px) {
-      html, body { overflow: auto; }
 
-      #canvas-container { display: none; }
+    /* prevent iOS rubber-band / page scroll interfering with the canvas */
+    html, body {
+      touch-action: none;
+      overscroll-behavior: none;
+      -webkit-overflow-scrolling: auto;
+    }
 
-      #top-bar { position: sticky; top: 0; }
-
-      /* show all cards stacked */
-      #ui-layer {
-        position: static;
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-        padding: 1.5rem 1.2rem calc(64px + 2rem);
-        pointer-events: auto;
-      }
+    /* shrink cards so they fit on a phone without covering the hall */
+    @media (max-width: 600px) {
       .slide-content {
-        position: static;
-        width: 100%;
-        opacity: 1 !important;
-        transform: none !important;
-        pointer-events: auto;
+        left: 4%;
+        width: min(270px, 82vw);
       }
-      #slide-0 { width: 100%; left: auto; transform: none !important; text-align: center; }
-      #doodles-layer { display: none; }
-      #panel-dots { display: none; }
-      #scroll-hint { display: none; }
-      #road-strip { position: fixed; }
+      #slide-0 {
+        left: 50%;
+        width: min(310px, 90vw);
+      }
+      .s-card {
+        padding: 1.2rem 1.1rem;
+      }
+      .s-card h2 { font-size: 1.6rem; }
+      .s-card p  { font-size: 0.83rem; }
+      .s-btn     { font-size: 0.86rem; height: 38px; line-height: 38px; }
+      .intro-title { font-size: clamp(2.4rem, 11vw, 3.8rem); }
+      .intro-sub   { font-size: 0.88rem; }
+      /* hide doodles on very small screens to reduce clutter */
+      .fd-bolt, .fd-flower, .fd-stick { display: none; }
+    }
+
+    @media (max-width: 380px) {
+      .slide-content { width: 88vw; }
+      .s-card h2 { font-size: 1.4rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -571,8 +571,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <script>
-    // ─── only run Three.js on non-mobile ───────────────────────────────
-    if (window.innerWidth > 700) {
+    // ─── Three.js hall — runs on all screen sizes including mobile/iOS ──
 
       // Django static image URLs injected as JS vars
       const SLIDE_IMAGES = [
@@ -758,14 +757,15 @@
       window.addEventListener('touchstart', e => {
         touchX0 = e.touches[0].clientX;
         clearTimeout(snapTimer);
-      });
+      }, { passive: false });
       window.addEventListener('touchmove', e => {
+        e.preventDefault(); // stop iOS page scroll from stealing the gesture
         const diff  = touchX0 - e.touches[0].clientX;
         scrollTgt  += diff * 0.55;
         scrollTgt   = Math.max(0, Math.min(scrollTgt, (SLIDE_COUNT - 1) * SPACING_X));
         touchX0     = e.touches[0].clientX;
         clearTimeout(snapTimer);
-      });
+      }, { passive: false });
       window.addEventListener('touchend', () => {
         snapNearest();
       });
@@ -830,8 +830,6 @@
       });
 
       animate();
-    }
-    // ─── end desktop Three.js block ─────────────────────────────────
   </script>
 
 </body>
