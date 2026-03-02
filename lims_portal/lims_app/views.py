@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .models import scholarList, commenter
+from .models import scholarList, commenter, PrivateMessage
 
 def home(request):
     return render(request, "home.html", context={"current_tab": "home"})
@@ -20,7 +20,7 @@ def curie(request):
 
 def get_comments(request):
     scholar_name = request.GET.get('scholar')
-    comments = commenter.objects.filter(targetScholar=scholar_name).values('username', 'comment')
+    comments = commenter.objects.filter(targetScholar=scholar_name).values('username', 'comment', 'created_at')
     return JsonResponse(list(comments), safe=False)
 
 @csrf_exempt
@@ -33,6 +33,22 @@ def add_comment(request):
                 targetScholar=request.POST.get('targetScholar')
             )
             comment.save()
+            return JsonResponse({'success': True})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
+    return JsonResponse({'success': False, 'error': 'Invalid method'})
+
+@csrf_exempt
+def send_private_message(request):
+    if request.method == 'POST':
+        try:
+            msg = PrivateMessage(
+                sender_name=request.POST.get('sender_name'),
+                sender_email=request.POST.get('sender_email', ''),
+                message=request.POST.get('message'),
+                targetScholar=request.POST.get('targetScholar')
+            )
+            msg.save()
             return JsonResponse({'success': True})
         except Exception as e:
             return JsonResponse({'success': False, 'error': str(e)})

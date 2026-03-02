@@ -27,7 +27,7 @@ urlpatterns = [
     path('einstein/', einstein,  name='einstein'),
     path('get-comments/', views.get_comments, name='get_comments'),
     path('add-comment/', views.add_comment, name='add_comment'),
-
+    path('send-private-message/', views.send_private_message, name='send_private_message'),
 ]
 
 

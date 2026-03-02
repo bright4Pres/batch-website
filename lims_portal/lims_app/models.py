@@ -38,3 +38,19 @@ class commenter(models.Model):
         verbose_name = "Student Comment"
         verbose_name_plural = "Student Comments"
         ordering = ['-created_at']
+
+class PrivateMessage(models.Model):
+    sender_name = models.CharField(max_length=100, help_text="Your name")
+    sender_email = models.EmailField(blank=True, help_text="Your email (optional, for replies)")
+    message = models.TextField(max_length=2000, help_text="Your private message")
+    targetScholar = models.CharField(max_length=100, help_text="Student this message is for")
+    created_at = models.DateTimeField(default=timezone.now)
+    is_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"[Private] {self.sender_name} -> {self.targetScholar}"
+
+    class Meta:
+        verbose_name = "Private Message"
+        verbose_name_plural = "Private Messages"
+        ordering = ['-created_at']
