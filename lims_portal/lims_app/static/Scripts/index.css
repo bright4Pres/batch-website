@@ -188,11 +188,7 @@ img {
 }
 
 .anim-overview-stroke {
-  stroke-dasharray: 5414.29;
-  stroke-dashoffset: 5414.29;
-  animation: stroke auto linear both;
-  animation-timeline: scroll();
-  animation-range: 0% 90%;
+  /* dasharray + dashoffset set by JS using getTotalLength() */
 }
 
 .container {
@@ -524,7 +520,7 @@ h2 {
 
 /* --- Respect reduced-motion --- */
 @media (prefers-reduced-motion: reduce) {
-  .anim-overview-stroke { animation: none; stroke-dashoffset: 0; }
+  .anim-overview-stroke { stroke-dashoffset: 0 !important; opacity: 1 !important; }
   .photo-frame, img { animation: none; }
   .box { animation: none; }
   h2 { animation: none; clip-path: none; }

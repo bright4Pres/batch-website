@@ -65,7 +65,68 @@
 	</div>
 </section>
 <section class="bottom"></section>
-    <script src='https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js'></script>
+  <script>
+    (function () {
+      // paths[0] = dark outline, paths[1] = sand fill (both solid strokes)
+      // paths[2] = rose dashes (stroke-dasharray="38,22" — can't use offset trick, use opacity)
+      var allPaths = document.querySelectorAll('.anim-overview-stroke');
+      if (!allPaths.length) return;
+
+      var solidPaths = [allPaths[0], allPaths[1]];
+      var dashPath   = allPaths[2] || null;
+      var section    = document.getElementById('scroll-section');
+
+      // Use actual path length so the animation always covers the full stroke
+      var len = allPaths[0].getTotalLength();
+
+      // Initialise: solid paths start fully hidden
+      solidPaths.forEach(function(p) {
+        p.style.strokeDasharray  = len;
+        p.style.strokeDashoffset = len;
+      });
+      // Dashes path starts invisible
+      if (dashPath) dashPath.style.opacity = '0';
+
+      // Stable section bounds — recomputed only on resize, not on every scroll.
+      // offsetTop gives the distance from the element to the top of the document.
+      var startScroll, endScroll, range;
+      function updateBounds() {
+        var sectionTop    = section.offsetTop;
+        var sectionHeight = section.offsetHeight;
+        startScroll = sectionTop;
+        endScroll   = sectionTop + sectionHeight - window.innerHeight;
+        range       = endScroll - startScroll;
+      }
+      updateBounds();
+
+      function draw() {
+        var scrolled = window.scrollY || window.pageYOffset;
+        var progress = range > 0 ? Math.min(Math.max((scrolled - startScroll) / range, 0), 1) : 0;
+
+        // Draw solid road strokes
+        var offset = len * (1 - progress);
+        solidPaths.forEach(function(p) {
+          p.style.strokeDashoffset = offset;
+        });
+
+        // Fade dashes in once road is ~15% drawn
+        if (dashPath) {
+          var dashOpacity = Math.max(0, Math.min(1, (progress - 0.15) / 0.2));
+          dashPath.style.opacity = dashOpacity;
+        }
+      }
+
+      window.addEventListener('scroll', draw, { passive: true });
+      window.addEventListener('resize', function() {
+        len = allPaths[0].getTotalLength();
+        solidPaths.forEach(function(p) { p.style.strokeDasharray = len; });
+        updateBounds();
+        draw();
+      }, { passive: true });
+
+      draw();
+    })();
+  </script>
   </body>
   
 </html>
