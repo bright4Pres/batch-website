@@ -70,14 +70,13 @@ def send_private_message(request):
             reply_info = f'Reply to them: {sender_email}' if sender_email else 'No reply email provided'
             email_body = (
                 f'Hi {target_scholar},\n\n'
-                f'Someone sent you a private message on Batch 2026!\n\n'
+                f'Someone sent you a palangka!\n\n'
                 f'From: {sender_name}\n'
                 f'{reply_info}\n\n'
                 f'Message:\n{message}\n\n'
-                f'---\nThis message is also saved in the admin panel.'
             )
             send_mail(
-                subject=f'[Batch 2026] Private message for {target_scholar}',
+                subject=f'To {target_scholar}',
                 message=email_body,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=recipients,
