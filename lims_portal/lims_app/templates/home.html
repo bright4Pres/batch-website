@@ -79,7 +79,8 @@
     }
 
     /* ══════════════════════════════════════
-       ROAD STRIP (bottom fixed)
+       ROAD STRIP — mobile only
+       (desktop road is drawn in Three.js)
     ══════════════════════════════════════ */
     #road-strip {
       position: fixed;
@@ -89,6 +90,7 @@
       border-top: 5px solid var(--road-ink);
       z-index: 40;
       pointer-events: none;
+      display: none; /* hidden on desktop — 3D road handles it */
     }
     /* dashed centre line */
     #road-strip::before {
@@ -114,6 +116,10 @@
         rgba(122,92,72,0.28) 0, rgba(122,92,72,0.28) 8px,
         transparent 8px, transparent 22px
       );
+    }
+    /* show CSS road strip only on mobile */
+    @media (max-width: 700px) {
+      #road-strip { display: block; }
     }
 
     /* ══════════════════════════════════════
@@ -347,12 +353,15 @@
     ══════════════════════════════════════ */
     #panel-dots {
       position: fixed;
-      bottom: 76px;
+      bottom: 14px;
       left: 50%;
       transform: translateX(-50%);
       display: flex;
       gap: 8px;
       z-index: 42;
+    }
+    @media (max-width: 700px) {
+      #panel-dots { bottom: 72px; }
     }
     .pdot {
       width: 8px; height: 8px;
@@ -373,7 +382,7 @@
     ══════════════════════════════════════ */
     #scroll-hint {
       position: fixed;
-      bottom: 72px;
+      bottom: 10px;
       right: 1.5rem;
       font-family: 'Patrick Hand', cursive;
       font-size: 0.72rem;
@@ -630,11 +639,12 @@
         const grp = new THREE.Group();
         grp.position.set(i * SPACING_X, 0, 0);
 
-        // ── background plane (tinted paper) ──
+        // ── background plane (tinted paper — tall enough to cover road area below) ──
         const bgMat  = new THREE.MeshBasicMaterial({ color: PANEL_COLORS[i] });
-        const bgGeo  = new THREE.PlaneGeometry(SPACING_X, PLANE_H * 1.6);
+        const bgGeo  = new THREE.PlaneGeometry(SPACING_X, PLANE_H * 2.4);
         const bgMesh = new THREE.Mesh(bgGeo, bgMat);
-        bgMesh.position.z = -2;
+        // shift down slightly so more bg shows under the painting
+        bgMesh.position.set(0, -PLANE_H * 0.2, -2);
         grp.add(bgMesh);
 
         if (SLIDE_IMAGES[i]) {
@@ -670,15 +680,50 @@
           grp.add(introMesh);
         }
 
-        // ── floor line (road marker per panel) ──
-        const lineZ  = -1;
-        const halfW  = SPACING_X / 2;
-        const lGeo   = new THREE.BufferGeometry().setFromPoints([
-          new THREE.Vector3(-halfW, -PLANE_H * 0.82, lineZ),
-          new THREE.Vector3( halfW, -PLANE_H * 0.82, lineZ),
+        // ── 3D ROAD at the bottom of each panel ─────────────────
+        // Road sits just below the painting, shares gallery rotation + scroll
+        const ROAD_H  = 7;           // units tall
+        const ROAD_Y  = -(PLANE_H / 2 + ROAD_H / 2 + 0.2); // ~ -12.7
+        const ROAD_Z  = -1.6;
+        const RW      = SPACING_X + 1.5;  // slightly wider than panel spacing
+
+        // sand-coloured surface
+        const roadMat  = new THREE.MeshBasicMaterial({ color: 0xeddcc8 });
+        const roadMesh = new THREE.Mesh(new THREE.PlaneGeometry(RW, ROAD_H), roadMat);
+        roadMesh.position.set(0, ROAD_Y, ROAD_Z);
+        grp.add(roadMesh);
+
+        // dark-ink top edge
+        const topY   = ROAD_Y + ROAD_H / 2;
+        const tGeo   = new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(-RW / 2, topY, ROAD_Z + 0.1),
+          new THREE.Vector3( RW / 2, topY, ROAD_Z + 0.1),
         ]);
-        const lMesh  = new THREE.LineSegments(lGeo, new THREE.LineBasicMaterial({ color: 0xe0d4c8, linewidth: 1 }));
-        grp.add(lMesh);
+        const topLine = new THREE.Line(tGeo, new THREE.LineBasicMaterial({ color: 0x7a5c48 }));
+        grp.add(topLine);
+
+        // faint second edge (road shoulder)
+        const t2Geo  = new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(-RW / 2, topY - 0.6, ROAD_Z + 0.08),
+          new THREE.Vector3( RW / 2, topY - 0.6, ROAD_Z + 0.08),
+        ]);
+        const topLine2 = new THREE.Line(t2Geo, new THREE.LineBasicMaterial({ color: 0xb09070, opacity: 0.45, transparent: true }));
+        grp.add(topLine2);
+
+        // rose dashed centre line (LineSegments — points in start/end pairs)
+        const dashLen = 3.0, gapLen = 2.2;
+        const dPts    = [];
+        let dx = -RW / 2;
+        while (dx < RW / 2) {
+          const dEnd = Math.min(dx + dashLen, RW / 2);
+          dPts.push(new THREE.Vector3(dx,   ROAD_Y, ROAD_Z + 0.15));
+          dPts.push(new THREE.Vector3(dEnd, ROAD_Y, ROAD_Z + 0.15));
+          dx += dashLen + gapLen;
+        }
+        const dashGeo  = new THREE.BufferGeometry().setFromPoints(dPts);
+        const dashLine = new THREE.LineSegments(dashGeo, new THREE.LineBasicMaterial({ color: 0xc96090 }));
+        grp.add(dashLine);
+        // ── end road ─────────────────────────────────────────────────
 
         gallery.add(grp);
         paintingGroups.push(grp);
