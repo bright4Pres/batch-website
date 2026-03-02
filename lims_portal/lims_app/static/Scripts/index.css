@@ -7,27 +7,9 @@
   }
 }
 @keyframes colorFade {
-  0% {
-    background: linear-gradient(180deg, 
-      #ffffff 0%, 
-      #fff9e6 30%, 
-      #ffe066 60%, 
-      #f39e28 100%);
-  }
-  50% {
-    background: linear-gradient(180deg, 
-      #ffffff 0%, 
-      #ffe066 20%, 
-      #ffbc5d 60%, 
-      #ff9b3d 100%);
-  }
-  100% {
-    background: linear-gradient(180deg, 
-      #ffbc5d 0%, 
-      #ff9b3d 30%, 
-      #ff7a1a 60%, 
-      #e65100 100%);
-  }
+  /* kept as named anchor, no longer used for body bg */
+  0%   { opacity: 1; }
+  100% { opacity: 1; }
 }
 @keyframes reveal {
   from {
@@ -47,20 +29,25 @@
   }
 }
 html {
-  background: linear-gradient(180deg,
-    #ffffff 0%,
-    #ffe9c2 40%,
-    #ffd28a 70%,
-    #ffa322 100%);
+  background-color: #fdf6f0;
   min-height: 100vh;
 }
 
 body {
-  font-family: "Montserrat", sans-serif;
+  font-family: 'Nunito', 'Montserrat', sans-serif;
   font-size: 100%;
   font-weight: 400;
   margin: 0;
-  background: transparent;
+  background-color: #fdf6f0;
+  /* paper-ruled lines, same as section pages */
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 31px,
+    rgba(180,160,140,0.10) 31px,
+    rgba(180,160,140,0.10) 32px
+  );
+  background-size: 100% 32px;
 }
 
 img {
@@ -76,27 +63,28 @@ img {
 }
 
 .btn {
-  background: linear-gradient(135deg, #de2870 0%, #c91f63 100%);
+  background-color: #d4769a;
   border: none;
-  border-radius: 50px;
-  color: white;
+  border-radius: 20px;
+  color: #fff;
   display: inline-block;
-  font-size: 18px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.95rem;
   font-weight: 700;
-  letter-spacing: 0.02em;
-  line-height: 50px;
-  height: 50px;
-  padding: 0 35px;
+  letter-spacing: 0.03em;
+  line-height: 46px;
+  height: 46px;
+  padding: 0 28px;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: background-color 0.2s, transform 0.15s, box-shadow 0.2s;
   width: fit-content;
-  box-shadow: 0 4px 15px rgba(222, 40, 112, 0.3);
+  box-shadow: 2px 3px 0 rgba(0,0,0,0.08);
   text-align: center;
 }
 .btn:hover {
-  background: linear-gradient(135deg, #c91f63 0%, #b01c58 100%);
+  background-color: #a85478;
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(222, 40, 112, 0.4);
+  box-shadow: 3px 5px 0 rgba(0,0,0,0.10);
 }
 
 .page-header {
@@ -127,8 +115,9 @@ img {
   left: 0;
   right: 0;
   bottom: 0;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="stars" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="%23ffffff" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23stars)"/></svg>');
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.2" fill="%23d4769a" opacity="0.18"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
   animation: sparkle 20s linear infinite;
+  pointer-events: none;
 }
 
 @keyframes sparkle {
@@ -143,10 +132,14 @@ img {
 }
 
 .header-content h1 {
-  font-size: clamp(3rem, 10vw, 5rem);
-  color: #1f1305;
+  font-family: 'Caveat', 'Montserrat', cursive;
+  font-size: clamp(3.2rem, 10vw, 5.8rem);
+  color: #3b2f2f;
   margin-bottom: 1rem;
-  text-shadow: 2px 2px 4px rgba(255, 188, 93, 0.35);
+  font-weight: 700;
+  /* hand-drawn underline via text-shadow instead */
+  text-shadow: 2px 3px 0 rgba(212,118,154,0.18);
+  position: relative;
 }
 
 .scroll-indicator {
@@ -213,7 +206,8 @@ img {
 }
 
 h1 {
-  color: #1f1305;
+  font-family: 'Caveat', 'Montserrat', cursive;
+  color: #3b2f2f;
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   line-height: 1.1;
   -webkit-font-smoothing: antialiased;
@@ -221,15 +215,16 @@ h1 {
 }
 
 h2 {
+  font-family: 'Caveat', 'Montserrat', cursive;
   clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  color: #1f1305;
-  font-size: clamp(2.25rem, 5vw, 3.875rem);
-  font-weight: 900;
-  letter-spacing: 0.02em;
+  color: #a85478;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
   margin: 0;
   padding-top: clamp(2rem, 6vw, 4.5rem);
   position: relative;
-  width: min(100%, 600px);
+  width: min(100%, 640px);
   text-align: right;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -248,38 +243,82 @@ h2 {
 }
 
 .box {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  color: #333;
-  padding: 3rem;
+  background-color: #fff;
+  color: #3b2f2f;
+  padding: 2.8rem;
   opacity: 1;
   scale: 1;
   animation: scaleIn linear both;
   animation-timeline: view();
   animation-range: 0% 40vh;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  border: 1px solid rgba(199, 219, 244, 0.2);
-  transition: all 0.3s ease;
+  border-radius: 4px;
+  /* polaroid-style border */
+  box-shadow: 3px 4px 0 rgba(0,0,0,0.07);
+  border: 2px solid #e8e0d8;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  position: relative;
+}
+/* washi tape strip at top of each box */
+.box::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1.5deg);
+  width: 72px;
+  height: 22px;
+  background-color: #fce4b8;
+  border-radius: 2px;
+  opacity: 0.9;
+}
+.box:nth-child(even)::before {
+  background-color: #f5c6d0;
+  transform: translateX(-50%) rotate(2deg);
+  width: 84px;
 }
 .box:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+  transform: translateY(-4px);
+  box-shadow: 4px 6px 0 rgba(0,0,0,0.09);
 }
 .box h3 {
-  font-size: 2.5rem;
-  font-weight: 900;
-  letter-spacing: 0.02em;
-  margin: 0 0 18px;
-  color: #ff7a1a;
+  font-family: 'Caveat', 'Montserrat', cursive;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin: 0 0 14px;
+  color: #a85478;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 .box p {
-  font-size: 1.1rem;
-  line-height: 1.6;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  line-height: 1.65;
   margin: 0 0 2em;
-  color: #555;
+  color: #6b5959;
 }
+
+/* ----- per-section color identity on home cards ----- */
+/* Curie card — rose */
+.box-1::before { background-color: #fac8da; transform: translateX(-50%) rotate(-2deg); width: 78px; }
+.box-1 h3      { color: #943060; }
+.box-1 .btn    { background-color: #c96090; }
+.box-1 .btn:hover { background-color: #943060; }
+
+/* Einstein card — sky blue */
+.box-2::before { background-color: #a8d4f0; transform: translateX(-50%) rotate(2.5deg); width: 86px; }
+.box-2 h3      { color: #2a6090; }
+.box-2 .btn    { background-color: #4a90c4; }
+.box-2 .btn:hover { background-color: #2a6090; }
+
+/* Tesla card — sage green */
+.box-3::before { background-color: #a8d8a8; transform: translateX(-50%) rotate(-1deg); width: 76px; }
+.box-3 h3      { color: #2e6e38; }
+.box-3 .btn    { background-color: #5a9e60; }
+.box-3 .btn:hover { background-color: #2e6e38; }
+
+/* box-4 keeps the default rose */
+.box-4::before { background-color: #fce4b8; transform: translateX(-50%) rotate(1.5deg); width: 82px; }
 
 .box-1 {
   grid-column: 3/span 3;

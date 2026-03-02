@@ -24,33 +24,39 @@
   --paper-lines: rgba(180,160,140,0.12);
 }
 
-/* section-specific palettes */
+/* section-specific palettes — each has a distinct background tint */
 .section-curie {
-  --accent: #d4769a;
-  --accent-light: #f9e4ed;
-  --accent-dark: #a85478;
-  --bg: #fdf6f0;
+  --accent: #c96090;
+  --accent-light: #fce8f0;
+  --accent-dark: #943060;
+  --bg: #fde8f0;        /* clearly rosy */
+  --card-bg: #fff5f8;
   --tape: #fce4b8;
   --tape-alt: #f5c6d0;
   --pin: #e57373;
+  --paper-lines: rgba(200,130,160,0.13);
 }
 .section-einstein {
-  --accent: #6a9ec0;
-  --accent-light: #ddeaf4;
-  --accent-dark: #3d6f8e;
-  --bg: #f4f1eb;
+  --accent: #4a90c4;
+  --accent-light: #d6eaf8;
+  --accent-dark: #2a6090;
+  --bg: #e8f3fc;        /* clearly sky-blue */
+  --card-bg: #f4f9fe;
   --tape: #b8d8f0;
-  --tape-alt: #ffe0b2;
+  --tape-alt: #ffdda0;
   --pin: #7986cb;
+  --paper-lines: rgba(74,144,196,0.12);
 }
 .section-tesla {
-  --accent: #7bae7f;
-  --accent-light: #dff0d8;
-  --accent-dark: #4a7a4e;
-  --bg: #f5f2ec;
-  --tape: #c8e6c9;
-  --tape-alt: #fff9c4;
-  --pin: #81c784;
+  --accent: #5a9e60;
+  --accent-light: #d4edda;
+  --accent-dark: #2e6e38;
+  --bg: #e8f5e8;        /* clearly sage-green */
+  --card-bg: #f4fbf4;
+  --tape: #b8ddb8;
+  --tape-alt: #fff9a0;
+  --pin: #66bb6a;
+  --paper-lines: rgba(90,158,96,0.12);
 }
 
 /* ---------- body ---------- */
