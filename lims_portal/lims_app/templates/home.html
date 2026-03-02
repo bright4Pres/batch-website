@@ -129,25 +129,27 @@
       pointer-events: none;
     }
 
+    /* cards vertically centred in the usable space BELOW the top bar */
     .slide-content {
       position: absolute;
-      top: 50%;
+      top: calc(52px + (100% - 52px) / 2);
       left: 7%;
       transform: translateY(calc(-50% + 18px));
       width: min(310px, 34%);
       opacity: 0;
       transition: opacity 0.65s ease, transform 0.65s ease;
-      pointer-events: none; /* inactive slides must not eat clicks */
+      pointer-events: none;
     }
     .slide-content.active {
       opacity: 1;
       transform: translateY(-50%);
-      pointer-events: auto; /* only the visible slide is interactive */
+      pointer-events: auto;
     }
 
-    /* ── intro slide (centred) ── */
+    /* ── intro slide (centred below top bar) ── */
     #slide-0 {
       left: 50%;
+      top: calc(52px + (100% - 52px) / 2);
       transform: translateX(-50%) translateY(calc(-50% + 18px));
       width: min(520px, 80vw);
       text-align: center;
@@ -403,29 +405,33 @@
 
     /* shrink cards so they fit on a phone without covering the hall */
     @media (max-width: 600px) {
+      .tb-year { display: none; } /* prevent top bar overflow on small phones */
+
       .slide-content {
         left: 4%;
-        width: min(270px, 82vw);
+        width: min(240px, 72vw); /* narrower so 3D hall stays visible */
       }
       #slide-0 {
         left: 50%;
-        width: min(310px, 90vw);
+        width: min(300px, 88vw);
       }
       .s-card {
-        padding: 1.2rem 1.1rem;
+        padding: 1rem 1rem;
       }
-      .s-card h2 { font-size: 1.6rem; }
-      .s-card p  { font-size: 0.83rem; }
-      .s-btn     { font-size: 0.86rem; height: 38px; line-height: 38px; }
-      .intro-title { font-size: clamp(2.4rem, 11vw, 3.8rem); }
-      .intro-sub   { font-size: 0.88rem; }
-      /* hide doodles on very small screens to reduce clutter */
+      .s-card h2 { font-size: 1.5rem; }
+      .s-card p  { font-size: 0.8rem; line-height: 1.55; margin-bottom: 0.7rem; }
+      .s-btn     { font-size: 0.84rem; height: 36px; line-height: 36px; padding: 0 1rem; }
+      .intro-title { font-size: clamp(2.2rem, 10vw, 3.4rem); }
+      .intro-sub   { font-size: 0.86rem; margin-bottom: 1.2rem; }
+      .mem-label   { font-size: 0.8rem; }
+      /* hide doodles on small screens to reduce clutter */
       .fd-bolt, .fd-flower, .fd-stick { display: none; }
     }
 
     @media (max-width: 380px) {
-      .slide-content { width: 88vw; }
-      .s-card h2 { font-size: 1.4rem; }
+      .slide-content { width: 80vw; }
+      .s-card h2 { font-size: 1.3rem; }
+      .s-card p  { font-size: 0.76rem; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -730,7 +736,15 @@
       }
 
       gallery.rotation.y  = WALL_Y;
-      gallery.position.x  = 7;
+
+      // shift gallery rightward so the painting sits on the right half of screen
+      // — scale with aspect ratio so it stays visible on portrait phones too
+      function galleryOffset() {
+        const aspect = innerWidth / innerHeight;
+        // ~7 on wide landscape, scales down proportionally for portrait
+        return Math.max(1.5, 7 * Math.min(aspect / 1.4, 1));
+      }
+      gallery.position.x = galleryOffset();
 
       // ── scroll state ───────────────────────────────────────────────
       let scrollCur = 0;
@@ -827,6 +841,7 @@
         camera.aspect = innerWidth / innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(innerWidth, innerHeight);
+        gallery.position.x = galleryOffset();
       });
 
       animate();
