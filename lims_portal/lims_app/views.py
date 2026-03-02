@@ -2,8 +2,27 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
+from django.core.cache import cache
 from django.conf import settings
 from .models import scholarList, commenter, PrivateMessage
+
+
+def get_client_ip(request):
+    x_forwarded = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded:
+        return x_forwarded.split(',')[0].strip()
+    return request.META.get('REMOTE_ADDR', 'unknown')
+
+
+def rate_limit(request, key_prefix, max_hits, window_seconds):
+    """Returns True (blocked) if the IP has exceeded max_hits in window_seconds."""
+    ip = get_client_ip(request)
+    cache_key = f'rl:{key_prefix}:{ip}'
+    count = cache.get(cache_key, 0)
+    if count >= max_hits:
+        return True
+    cache.set(cache_key, count + 1, timeout=window_seconds)
+    return False
 
 def home(request):
     return render(request, "home.html", context={"current_tab": "home"})
@@ -28,6 +47,8 @@ def get_comments(request):
 @csrf_exempt
 def add_comment(request):
     if request.method == 'POST':
+        if rate_limit(request, 'comment', max_hits=5, window_seconds=60):
+            return JsonResponse({'success': False, 'error': 'Too many comments — slow down a bit! 😅'}, status=429)
         try:
             comment = commenter(
                 username=request.POST.get('username'),
@@ -43,6 +64,8 @@ def add_comment(request):
 @csrf_exempt
 def send_private_message(request):
     if request.method == 'POST':
+        if rate_limit(request, 'privmsg', max_hits=3, window_seconds=600):
+            return JsonResponse({'success': False, 'error': 'Too many messages — please wait a few minutes 💌'}, status=429)
         try:
             sender_name = request.POST.get('sender_name')
             sender_email = request.POST.get('sender_email', '')
