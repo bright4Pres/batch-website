@@ -140,11 +140,12 @@
       width: min(310px, 34%);
       opacity: 0;
       transition: opacity 0.65s ease, transform 0.65s ease;
-      pointer-events: auto;
+      pointer-events: none; /* inactive slides must not eat clicks */
     }
     .slide-content.active {
       opacity: 1;
       transform: translateY(-50%);
+      pointer-events: auto; /* only the visible slide is interactive */
     }
 
     /* ── intro slide (centred) ── */
@@ -470,7 +471,7 @@
     <!-- SLIDE 2 — Memory photo -->
     <div class="slide-content" id="slide-2">
       <div class="s-card card-mem">
-        <span class="s-badge">💌 memories</span>
+        <span class="s-badge">memories</span>
         <h2>Freshman Chaos</h2>
         <p>The cafeteria runs, the group chats that never slept, the shared notes before an exam. The little moments that somehow became the biggest ones.</p>
         <p class="mem-label">"we didn't know it yet, but these were the days"</p>
@@ -490,7 +491,7 @@
     <!-- SLIDE 4 — Memory photo -->
     <div class="slide-content" id="slide-4">
       <div class="s-card card-mem">
-        <span class="s-badge">📸 photo dump</span>
+        <span class="s-badge">photo dump</span>
         <h2>Middle of It All</h2>
         <p>Somewhere between the beginning and the end, we found our people. The ones you save a seat for without thinking. The ones who just get it.</p>
         <p class="mem-label">"the middle was actually the whole thing"</p>
