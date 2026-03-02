@@ -1,71 +1,792 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Batch 2026 Antuilan — Forever Remembered</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;600;700;800&family=Caveat:wght@500;700&family=Montserrat:wght@400;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://public.codepenassets.com/css/normalize-5.0.0.min.css">
-    <link rel="stylesheet" href="{% static 'Scripts/index.css' %}">
-  </head>
-  <body>
-  <header class="page-header">
-	<div class="header-content">
-		<h1>Batch 2026 Antuilan</h1>
-	</div>
-</header>
-<section id="scroll-section">
-	<svg class="line-svg" role="presentational" preserveAspectRatio="xMidYMin slice" width="100%" fill="none" viewBox="-480 -80 2300 2241">
-		<!-- outer edge — dark warm ink, gives the road a drawn outline feel -->
-		<path class="anim-overview-stroke" stroke="#7a5c48" stroke-width="360" stroke-linejoin="round" stroke-linecap="round" d="M-841 100H584c124 0 225 101 225 225v0c0 124-101 225-225 225h-95a281 281 0 00-281 281v0c0 155 125 281 281 281h442c167 0 304 136 304 304v0c0 168-137 304-304 304H795a439 439 0 00-439 439v82" opacity="0.55"></path>
-		<!-- road fill — warm sand, lighter than outline so it stands out -->
-		<path class="anim-overview-stroke" stroke="#eddcc8" stroke-width="290" stroke-linejoin="round" stroke-linecap="round" d="M-841 100H584c124 0 225 101 225 225v0c0 124-101 225-225 225h-95a281 281 0 00-281 281v0c0 155 125 281 281 281h442c167 0 304 136 304 304v0c0 168-137 304-304 304H795a439 439 0 00-439 439v82" opacity="0.90"></path>
-		<!-- center dashes — rose, popping against the tan road -->
-		<path class="anim-overview-stroke" stroke="#c96090" stroke-width="8" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="38,22" d="M-841 100H584c124 0 225 101 225 225v0c0 124-101 225-225 225h-95a281 281 0 00-281 281v0c0 155 125 281 281 281h442c167 0 304 136 304 304v0c0 168-137 304-304 304H795a439 439 0 00-439 439v82" opacity="1"></path>
-	</svg>
-	<div class="container">
-		<h2 style="margin-top: 50px;">our story as a batch</h2>
-		<div class="layout-container">
-			<div class="box box-1">
-				<h3>The Beginning</h3>
-				<p>larem ipsum</p>
-				<a href="{% url 'curie' %}" class="btn">go section curie</a>
-			</div>
-			<figure class="photo-frame photo-frame-1">
-				<img src="{% static 'batcher.jpg' %}" alt="Students studying together">
-				<figcaption>the beginning &mdash; freshman days</figcaption>
-			</figure>
-			<div class="box box-2">
-				<h3>middle idk what to say</h3>
-				<p>larem ipsum</p>
-				<a href="{% url 'einstein' %}" class="btn"> Einstein </a>
-			</div>
-			<figure class="photo-frame photo-frame-2">
-				<img src="{% static 'batcher5.jpg' %}" alt="Graduation ceremony">
-				<figcaption>milestones &amp; memories &#9733;</figcaption>
-			</figure>
-			<div class="box box-3">
-				<h3>edning?</h3>
-				<p>larem ipsum</p>
-				<a href="{% url 'tesla' %}" class="btn">tesla</a>
-			</div>
-			<figure class="photo-frame photo-frame-3">
-				<img src="{% static 'batcher6.jpg' %}" alt="Students celebrating">
-				<figcaption>forever batch 2026 &#127775;</figcaption>
-			</figure>
-			<div class="box box-4">
-				<h3>Ano Na?</h3>
-				<p>goodbye guys, off to college. What's next after highschool? Find out with us, and keep in touch!</p>
-				<a href="#contact" class="btn">Stay Connected</a>
-			</div>
-		</div>
-	</div>
-</section>
-<section class="bottom"></section>
-    <script src='https://flackr.github.io/scroll-timeline/dist/scroll-timeline.js'></script>
-  </body>
-  
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Batch 2026 Antuilan — Forever Remembered</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;600;700;800&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:          #fdf6f0;
+      --ink:            #3b2f2f;
+      --ink-light:      #6b5959;
+      --curie:          #c96090;
+      --curie-dark:     #943060;
+      --curie-wash:     #fac8da;
+      --einstein:       #4a90c4;
+      --einstein-dark:  #2a6090;
+      --einstein-wash:  #a8d4f0;
+      --tesla:          #5a9e60;
+      --tesla-dark:     #2e6e38;
+      --tesla-wash:     #a8d8a8;
+      --gold:           #e8a820;
+      --gold-dark:      #a87010;
+      --gold-wash:      #fce4b8;
+      --road-sand:      #eddcc8;
+      --road-ink:       #7a5c48;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--cream);
+      font-family: 'Nunito', sans-serif;
+      color: var(--ink);
+    }
+
+    /* ── Three.js canvas ── */
+    #canvas-container {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+    }
+
+    /* ══════════════════════════════════════
+       TOP BAR
+    ══════════════════════════════════════ */
+    #top-bar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      z-index: 40;
+      /* frosted paper */
+      background: rgba(253,246,240,0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 2px dashed rgba(201,96,144,0.35);
+    }
+    #top-bar .tb-title {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(1.2rem, 3vw, 1.6rem);
+      font-weight: 700;
+      color: var(--ink);
+    }
+    #top-bar .tb-year {
+      font-family: 'Patrick Hand', cursive;
+      font-size: 0.85rem;
+      color: var(--curie);
+      letter-spacing: 0.04em;
+    }
+
+    /* ══════════════════════════════════════
+       ROAD STRIP (bottom fixed)
+    ══════════════════════════════════════ */
+    #road-strip {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      height: 64px;
+      background: var(--road-sand);
+      border-top: 5px solid var(--road-ink);
+      z-index: 40;
+      pointer-events: none;
+    }
+    /* dashed centre line */
+    #road-strip::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      height: 4px;
+      transform: translateY(-50%);
+      background: repeating-linear-gradient(
+        to right,
+        var(--curie)    0, var(--curie)    28px,
+        transparent 28px, transparent 50px
+      );
+    }
+    /* upper edge faint dashes */
+    #road-strip::after {
+      content: '';
+      position: absolute;
+      top: 7px; left: 0; right: 0;
+      height: 3px;
+      background: repeating-linear-gradient(
+        to right,
+        rgba(122,92,72,0.28) 0, rgba(122,92,72,0.28) 8px,
+        transparent 8px, transparent 22px
+      );
+    }
+
+    /* ══════════════════════════════════════
+       SLIDE-CONTENT CARDS (scrapbook style)
+    ══════════════════════════════════════ */
+    #ui-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .slide-content {
+      position: absolute;
+      top: 50%;
+      left: 7%;
+      transform: translateY(calc(-50% + 18px));
+      width: min(310px, 34%);
+      opacity: 0;
+      transition: opacity 0.65s ease, transform 0.65s ease;
+      pointer-events: auto;
+    }
+    .slide-content.active {
+      opacity: 1;
+      transform: translateY(-50%);
+    }
+
+    /* ── intro slide (centred) ── */
+    #slide-0 {
+      left: 50%;
+      transform: translateX(-50%) translateY(calc(-50% + 18px));
+      width: min(520px, 80vw);
+      text-align: center;
+    }
+    #slide-0.active {
+      transform: translateX(-50%) translateY(-50%);
+    }
+    .intro-year {
+      display: inline-block;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 0.85rem;
+      color: var(--curie);
+      background: var(--curie-wash);
+      border-radius: 20px;
+      padding: 3px 16px;
+      margin-bottom: 0.9rem;
+      transform: rotate(-1deg);
+      letter-spacing: 0.04em;
+    }
+    .intro-title {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.05;
+      margin-bottom: 0.8rem;
+      text-shadow: 3px 4px 0 rgba(201,96,144,0.13);
+    }
+    .intro-sub {
+      font-family: 'Nunito', sans-serif;
+      font-size: clamp(0.9rem, 2vw, 1.05rem);
+      color: var(--ink-light);
+      margin-bottom: 1.8rem;
+      line-height: 1.6;
+    }
+    .scroll-cue {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 0.92rem;
+      color: var(--ink-light);
+      animation: nudge 2.2s ease-in-out infinite;
+    }
+    .scroll-cue svg {
+      width: 28px; height: 28px;
+      stroke: var(--curie);
+      stroke-width: 2.5;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    @keyframes nudge {
+      0%, 100% { transform: translateX(0); }
+      50%       { transform: translateX(9px); }
+    }
+
+    /* ── scrapbook info card ── */
+    .s-card {
+      background: #fff;
+      border: 2px solid #e8e0d8;
+      border-radius: 4px;
+      padding: clamp(1.4rem, 3.5vw, 2.2rem);
+      position: relative;
+      box-shadow: 4px 5px 0 rgba(0,0,0,0.08);
+    }
+    /* washi tape */
+    .s-card::before {
+      content: '';
+      position: absolute;
+      top: -11px; left: 50%;
+      width: 84px; height: 21px;
+      border-radius: 2px;
+      opacity: 0.9;
+      transform: translateX(-50%) rotate(-2deg);
+    }
+    /* per-section washi colours */
+    .card-curie::before    { background: var(--curie-wash);    transform: translateX(-50%) rotate(-1.5deg); width: 90px; }
+    .card-einstein::before { background: var(--einstein-wash); transform: translateX(-50%) rotate(2.5deg);  width: 94px; }
+    .card-tesla::before    { background: var(--tesla-wash);    transform: translateX(-50%) rotate(-1deg);   width: 88px; }
+    .card-anona::before    { background: var(--gold-wash);     transform: translateX(-50%) rotate(1.5deg);  width: 86px; }
+    .card-mem::before      { background: #e8d8f8;              transform: translateX(-50%) rotate(-2deg);   width: 78px; }
+
+    .s-badge {
+      display: inline-block;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 11px;
+      border-radius: 20px;
+      margin-bottom: 0.65rem;
+    }
+    .card-curie    .s-badge { background: var(--curie-wash);    color: var(--curie-dark);    }
+    .card-einstein .s-badge { background: var(--einstein-wash); color: var(--einstein-dark); }
+    .card-tesla    .s-badge { background: var(--tesla-wash);    color: var(--tesla-dark);    }
+    .card-anona    .s-badge { background: var(--gold-wash);     color: var(--gold-dark);     }
+    .card-mem      .s-badge { background: #e8d8f8;              color: #6040a0;              }
+
+    .s-card h2 {
+      font-family: 'Caveat', cursive;
+      font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 0.55rem;
+    }
+    .card-curie    h2 { color: var(--curie-dark);    }
+    .card-einstein h2 { color: var(--einstein-dark); }
+    .card-tesla    h2 { color: var(--tesla-dark);    }
+    .card-anona    h2 { color: var(--gold-dark);     }
+    .card-mem      h2 { color: #6040a0;              }
+
+    .s-card p {
+      font-family: 'Nunito', sans-serif;
+      font-size: clamp(0.82rem, 1.6vw, 0.95rem);
+      line-height: 1.65;
+      color: var(--ink-light);
+      margin-bottom: 1.1rem;
+    }
+
+    .s-btn {
+      display: inline-block;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 0.92rem;
+      letter-spacing: 0.04em;
+      height: 42px;
+      line-height: 42px;
+      padding: 0 1.3rem;
+      border-radius: 4px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      transition: background 0.18s ease, transform 0.14s ease;
+    }
+    .s-btn:hover { transform: translateY(-2px); }
+    .btn-curie    { background: var(--curie);    } .btn-curie:hover    { background: var(--curie-dark);    }
+    .btn-einstein { background: var(--einstein); } .btn-einstein:hover { background: var(--einstein-dark); }
+    .btn-tesla    { background: var(--tesla);    } .btn-tesla:hover    { background: var(--tesla-dark);    }
+    .btn-anona    { background: var(--gold);     } .btn-anona:hover    { background: var(--gold-dark);     }
+
+    /* photo caption (memory slides) */
+    .mem-label {
+      font-family: 'Patrick Hand', cursive;
+      font-size: 0.88rem;
+      color: var(--ink-light);
+      margin-top: 0.9rem;
+      font-style: italic;
+      letter-spacing: 0.02em;
+    }
+
+    /* ══════════════════════════════════════
+       FLOATING DOTW DOODLES
+    ══════════════════════════════════════ */
+    #doodles-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 8;
+      pointer-events: none;
+    }
+    .fdoodle {
+      position: absolute;
+      opacity: 0.45;
+      filter: drop-shadow(1px 2px 0 rgba(255,255,255,0.6));
+    }
+    .fd-star {
+      top: 10%; right: 7%;
+      width: 72px; height: 72px;
+      color: var(--curie);
+      animation: dFloat 4.2s ease-in-out infinite;
+    }
+    .fd-stick {
+      bottom: 20%; left: 4%;
+      width: 58px; height: 90px;
+      color: var(--ink);
+      animation: dFloat 5s ease-in-out infinite reverse;
+    }
+    .fd-bolt {
+      top: 16%; left: 7%;
+      width: 48px; height: 78px;
+      color: var(--einstein);
+      animation: dFloat 3.8s ease-in-out infinite;
+    }
+    .fd-flower {
+      bottom: 22%; right: 5%;
+      width: 68px; height: 68px;
+      color: var(--tesla);
+      animation: dFloat 4.6s ease-in-out infinite reverse;
+    }
+    @keyframes dFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      33%       { transform: translateY(-11px) rotate(4deg); }
+      66%       { transform: translateY(6px) rotate(-3deg); }
+    }
+    @media (max-width: 640px) {
+      .fd-bolt, .fd-flower { display: none; }
+    }
+
+    /* ══════════════════════════════════════
+       PANEL INDICATOR DOTS
+    ══════════════════════════════════════ */
+    #panel-dots {
+      position: fixed;
+      bottom: 76px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 42;
+    }
+    .pdot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(122,92,72,0.28);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: background 0.22s, transform 0.22s;
+    }
+    .pdot.active {
+      background: var(--curie);
+      transform: scale(1.35);
+    }
+
+    /* ══════════════════════════════════════
+       SCROLL HINT (bottom-left corner)
+    ══════════════════════════════════════ */
+    #scroll-hint {
+      position: fixed;
+      bottom: 72px;
+      right: 1.5rem;
+      font-family: 'Patrick Hand', cursive;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(107,89,89,0.55);
+      z-index: 42;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+    }
+
+    /* ══════════════════════════════════════
+       MOBILE — simple vertical stack
+    ══════════════════════════════════════ */
+    @media (max-width: 700px) {
+      html, body { overflow: auto; }
+
+      #canvas-container { display: none; }
+
+      #top-bar { position: sticky; top: 0; }
+
+      /* show all cards stacked */
+      #ui-layer {
+        position: static;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        padding: 1.5rem 1.2rem calc(64px + 2rem);
+        pointer-events: auto;
+      }
+      .slide-content {
+        position: static;
+        width: 100%;
+        opacity: 1 !important;
+        transform: none !important;
+        pointer-events: auto;
+      }
+      #slide-0 { width: 100%; left: auto; transform: none !important; text-align: center; }
+      #doodles-layer { display: none; }
+      #panel-dots { display: none; }
+      #scroll-hint { display: none; }
+      #road-strip { position: fixed; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fdoodle, .scroll-cue { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <div id="top-bar">
+    <span class="tb-title">Batch 2026 Antuilan</span>
+    <span class="tb-year">PSHS — forever remembered ✦</span>
+  </div>
+
+  <!-- Three.js canvas goes here -->
+  <div id="canvas-container"></div>
+
+  <!-- ─── UI overlay ─── -->
+  <div id="ui-layer">
+
+    <!-- SLIDE 0 — Intro -->
+    <div class="slide-content" id="slide-0">
+      <span class="intro-year">Batch 2026 ✦ PSHS</span>
+      <h1 class="intro-title">Our Story<br>as a Batch</h1>
+      <p class="intro-sub">Six years. Three sections. Countless memories.<br>Scroll through our hall. ♡</p>
+      <span class="scroll-cue">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/><polyline points="15 18 21 12 15 6" opacity="0.4"/></svg>
+        scroll to explore
+      </span>
+    </div>
+
+    <!-- SLIDE 1 — Curie / The Beginning -->
+    <div class="slide-content" id="slide-1">
+      <div class="s-card card-curie">
+        <span class="s-badge">Section Curie</span>
+        <h2>The Beginning</h2>
+        <p>Where it all started. The wide eyes, the freshly ironed uniforms, the awkward introductions. Curie kicked off our story with heart and just a little bit of chaos.</p>
+        <a href="{% url 'curie' %}" class="s-btn btn-curie">Visit Section Curie →</a>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 — Memory photo -->
+    <div class="slide-content" id="slide-2">
+      <div class="s-card card-mem">
+        <span class="s-badge">💌 memories</span>
+        <h2>Freshman Chaos</h2>
+        <p>The cafeteria runs, the group chats that never slept, the shared notes before an exam. The little moments that somehow became the biggest ones.</p>
+        <p class="mem-label">"we didn't know it yet, but these were the days"</p>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 — Einstein / Middle -->
+    <div class="slide-content" id="slide-3">
+      <div class="s-card card-einstein">
+        <span class="s-badge">Section Einstein</span>
+        <h2>Getting Somewhere</h2>
+        <p>The thinkers, the dreamers, the ones who stayed up way too late figuring things out. Einstein kept us sharp, kept us laughing, kept us going.</p>
+        <a href="{% url 'einstein' %}" class="s-btn btn-einstein">Visit Section Einstein →</a>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 — Memory photo -->
+    <div class="slide-content" id="slide-4">
+      <div class="s-card card-mem">
+        <span class="s-badge">📸 photo dump</span>
+        <h2>Middle of It All</h2>
+        <p>Somewhere between the beginning and the end, we found our people. The ones you save a seat for without thinking. The ones who just get it.</p>
+        <p class="mem-label">"the middle was actually the whole thing"</p>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 — Tesla / Finale -->
+    <div class="slide-content" id="slide-5">
+      <div class="s-card card-tesla">
+        <span class="s-badge">Section Tesla</span>
+        <h2>The Grand Finale</h2>
+        <p>Tesla went out with a bang. The last hoorah. The section that made the final chapter the loudest, warmest one of all. You already know.</p>
+        <a href="{% url 'tesla' %}" class="s-btn btn-tesla">Visit Section Tesla →</a>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 — Ano Na -->
+    <div class="slide-content" id="slide-6">
+      <div class="s-card card-anona">
+        <span class="s-badge">🎓 and beyond</span>
+        <h2>Ano Na?</h2>
+        <p>College. Careers. Life. We're scattering now — different cities, different paths — but this batch is forever. Keep in touch, yeah?</p>
+        <p class="mem-label">"wherever you go, go as Batch 2026"</p>
+      </div>
+    </div>
+
+  </div><!-- end #ui-layer -->
+
+  <!-- Floating DOTW doodles -->
+  <div id="doodles-layer" aria-hidden="true">
+    <!-- wonky star -->
+    <svg class="fdoodle fd-star" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M40 8 L44 30 Q46 34 50 33 L72 34 Q76 34 74 37 L57 52 Q54 54 55 58 L62 79 Q63 83 60 81 L40 68 Q37 66 34 68 L14 81 Q11 83 12 79 L19 58 Q20 54 17 52 L0 37 Q-2 34 2 34 L24 33 Q28 34 30 30 Z" fill="currentColor"/>
+    </svg>
+    <!-- stick figure -->
+    <svg class="fdoodle fd-stick" viewBox="0 0 58 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="29" cy="12" r="10" stroke="currentColor" stroke-width="3.5" fill="none"/>
+      <line x1="29" y1="22" x2="29" y2="56" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="10" y1="36" x2="48" y2="32" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="29" y1="56" x2="12" y2="80" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="29" y1="56" x2="46" y2="80" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+    </svg>
+    <!-- lightning bolt -->
+    <svg class="fdoodle fd-bolt" viewBox="0 0 48 78" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M30 4 L10 42 L22 40 L14 74 L42 32 L28 35 Z" fill="currentColor"/>
+    </svg>
+    <!-- wobbly flower -->
+    <svg class="fdoodle fd-flower" viewBox="0 0 68 68" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="34" cy="14" rx="8" ry="12" fill="currentColor" opacity="0.7" transform="rotate(0 34 34)"/>
+      <ellipse cx="34" cy="14" rx="8" ry="12" fill="currentColor" opacity="0.7" transform="rotate(60 34 34)"/>
+      <ellipse cx="34" cy="14" rx="8" ry="12" fill="currentColor" opacity="0.7" transform="rotate(120 34 34)"/>
+      <ellipse cx="34" cy="14" rx="8" ry="12" fill="currentColor" opacity="0.7" transform="rotate(180 34 34)"/>
+      <ellipse cx="34" cy="14" rx="8" ry="12" fill="currentColor" opacity="0.7" transform="rotate(240 34 34)"/>
+      <ellipse cx="34" cy="14" rx="8" ry="12" fill="currentColor" opacity="0.7" transform="rotate(300 34 34)"/>
+      <circle cx="34" cy="34" r="9" fill="currentColor"/>
+    </svg>
+  </div>
+
+  <!-- Road strip -->
+  <div id="road-strip"></div>
+
+  <!-- Panel indicator dots -->
+  <div id="panel-dots">
+    <button class="pdot active" data-idx="0" aria-label="Intro"></button>
+    <button class="pdot" data-idx="1" aria-label="Curie"></button>
+    <button class="pdot" data-idx="2" aria-label="Memories"></button>
+    <button class="pdot" data-idx="3" aria-label="Einstein"></button>
+    <button class="pdot" data-idx="4" aria-label="Photo"></button>
+    <button class="pdot" data-idx="5" aria-label="Tesla"></button>
+    <button class="pdot" data-idx="6" aria-label="Ano Na"></button>
+  </div>
+
+  <!-- Scroll hint -->
+  <div id="scroll-hint">scroll to explore</div>
+
+  <!-- Three.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <script>
+    // ─── only run Three.js on non-mobile ───────────────────────────────
+    if (window.innerWidth > 700) {
+
+      // Django static image URLs injected as JS vars
+      const SLIDE_IMAGES = [
+        null,                                     // 0 — intro (no photo)
+        "{% static 'batcher.jpg' %}",             // 1 — Curie
+        "{% static 'batcher5.jpg' %}",            // 2 — memory
+        "{% static 'batcher6.jpg' %}",            // 3 — Einstein
+        "{% static 'batcher.jpg' %}",             // 4 — memory 2
+        "{% static 'batcher5.jpg' %}",            // 5 — Tesla
+        "{% static 'batcher6.jpg' %}",            // 6 — Ano Na
+      ];
+
+      const SLIDE_COUNT = SLIDE_IMAGES.length;    // 7
+      const SPACING_X   = 46;
+      const PLANE_W     = 13;
+      const PLANE_H     = 17;
+      const CAM_Z       = 30;
+      const WALL_Y      = -0.22;
+      const SNAP_DELAY  = 220;
+      const LERP        = 0.062;
+
+      // ── scene setup ─────────────────────────────────────────────────
+      const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0xfdf6f0);  // warm cream
+      scene.fog = new THREE.Fog(0xfdf6f0, 12, 115);
+
+      const camera = new THREE.PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 1000);
+      camera.position.set(0, 0, CAM_Z);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(innerWidth, innerHeight);
+      renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+      document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+      // lighting — warm candle-ish
+      scene.add(new THREE.AmbientLight(0xfff8f0, 0.75));
+      const dirLight = new THREE.DirectionalLight(0xffeedd, 0.55);
+      dirLight.position.set(8, 18, 12);
+      scene.add(dirLight);
+
+      // ── gallery group ───────────────────────────────────────────────
+      const gallery = new THREE.Group();
+      scene.add(gallery);
+
+      const loader  = new THREE.TextureLoader();
+      const planeGeo = new THREE.PlaneGeometry(PLANE_W, PLANE_H);
+
+      // section accent colours (for intro pane tint)
+      const PANEL_COLORS = [
+        0xfdf6f0,   // 0 intro — cream
+        0xfce8f0,   // 1 curie  — rose tint
+        0xfdf0f8,   // 2 mem    — soft lavender
+        0xedf4fb,   // 3 einstein — blue tint
+        0xfdf0f8,   // 4 mem
+        0xedf8ee,   // 5 tesla  — green tint
+        0xfffbf0,   // 6 ano na — gold tint
+      ];
+
+      // polaroid-style frame colour (warm white)
+      const FRAME_COLOR = 0xfff9f4;
+
+      const paintingGroups = [];
+
+      for (let i = 0; i < SLIDE_COUNT; i++) {
+        const grp = new THREE.Group();
+        grp.position.set(i * SPACING_X, 0, 0);
+
+        // ── background plane (tinted paper) ──
+        const bgMat  = new THREE.MeshBasicMaterial({ color: PANEL_COLORS[i] });
+        const bgGeo  = new THREE.PlaneGeometry(SPACING_X, PLANE_H * 1.6);
+        const bgMesh = new THREE.Mesh(bgGeo, bgMat);
+        bgMesh.position.z = -2;
+        grp.add(bgMesh);
+
+        if (SLIDE_IMAGES[i]) {
+          // ── polaroid photo plane ──
+          const tex  = loader.load(SLIDE_IMAGES[i]);
+          const mat  = new THREE.MeshBasicMaterial({ map: tex });
+          const mesh = new THREE.Mesh(planeGeo, mat);
+
+          // polaroid frame (thicker white border — rendered as slightly larger plane behind)
+          const frameMat  = new THREE.MeshBasicMaterial({ color: FRAME_COLOR });
+          const frameGeo  = new THREE.PlaneGeometry(PLANE_W + 0.7, PLANE_H + 1.6);
+          const frameMesh = new THREE.Mesh(frameGeo, frameMat);
+          frameMesh.position.set(0.1, -0.25, -0.05);
+          grp.add(frameMesh);
+
+          // drop shadow
+          const shMat = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.12 });
+          const shMesh = new THREE.Mesh(new THREE.PlaneGeometry(PLANE_W + 0.7, PLANE_H + 1.6), shMat);
+          shMesh.position.set(0.7, -0.7, -0.3);
+          grp.add(shMesh);
+
+          grp.add(mesh);
+
+          // thin outline
+          const edges   = new THREE.EdgesGeometry(planeGeo);
+          const outline = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0xd4c8be }));
+          grp.add(outline);
+
+        } else {
+          // intro slide — just a big dot-pattern plane (drawn with lines)
+          const introMat  = new THREE.MeshBasicMaterial({ color: PANEL_COLORS[0] });
+          const introMesh = new THREE.Mesh(planeGeo, introMat);
+          grp.add(introMesh);
+        }
+
+        // ── floor line (road marker per panel) ──
+        const lineZ  = -1;
+        const halfW  = SPACING_X / 2;
+        const lGeo   = new THREE.BufferGeometry().setFromPoints([
+          new THREE.Vector3(-halfW, -PLANE_H * 0.82, lineZ),
+          new THREE.Vector3( halfW, -PLANE_H * 0.82, lineZ),
+        ]);
+        const lMesh  = new THREE.LineSegments(lGeo, new THREE.LineBasicMaterial({ color: 0xe0d4c8, linewidth: 1 }));
+        grp.add(lMesh);
+
+        gallery.add(grp);
+        paintingGroups.push(grp);
+      }
+
+      gallery.rotation.y  = WALL_Y;
+      gallery.position.x  = 7;
+
+      // ── scroll state ───────────────────────────────────────────────
+      let scrollCur = 0;
+      let scrollTgt = 0;
+      let snapTimer = null;
+      let mouse     = { x: 0, y: 0 };
+
+      function snapNearest() {
+        const idx = Math.round(scrollTgt / SPACING_X);
+        scrollTgt = Math.max(0, Math.min(idx, SLIDE_COUNT - 1)) * SPACING_X;
+      }
+
+      window.addEventListener('wheel', e => {
+        e.preventDefault();
+        // trackpad (deltaMode=0) gives pixel values; wheel gives ~100
+        const factor = e.deltaMode === 0 ? 0.06 : 0.12;
+        scrollTgt += e.deltaY * factor;
+        scrollTgt = Math.max(0, Math.min(scrollTgt, (SLIDE_COUNT - 1) * SPACING_X));
+        clearTimeout(snapTimer);
+        snapTimer = setTimeout(snapNearest, SNAP_DELAY);
+      }, { passive: false });
+
+      let touchX0 = 0;
+      window.addEventListener('touchstart', e => {
+        touchX0 = e.touches[0].clientX;
+        clearTimeout(snapTimer);
+      });
+      window.addEventListener('touchmove', e => {
+        const diff  = touchX0 - e.touches[0].clientX;
+        scrollTgt  += diff * 0.55;
+        scrollTgt   = Math.max(0, Math.min(scrollTgt, (SLIDE_COUNT - 1) * SPACING_X));
+        touchX0     = e.touches[0].clientX;
+        clearTimeout(snapTimer);
+      });
+      window.addEventListener('touchend', () => {
+        snapNearest();
+      });
+
+      window.addEventListener('mousemove', e => {
+        mouse.x = (e.clientX / innerWidth)  *  2 - 1;
+        mouse.y = (e.clientY / innerHeight) * -2 + 1;
+      });
+
+      // dot button clicks
+      document.querySelectorAll('.pdot').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx  = parseInt(btn.dataset.idx, 10);
+          scrollTgt  = idx * SPACING_X;
+          clearTimeout(snapTimer);
+        });
+      });
+
+      // ── UI sync ────────────────────────────────────────────────────
+      function syncUI(sx) {
+        const idx  = Math.round(sx / SPACING_X);
+        const safe = Math.max(0, Math.min(idx, SLIDE_COUNT - 1));
+
+        for (let i = 0; i < SLIDE_COUNT; i++) {
+          const el  = document.getElementById('slide-' + i);
+          const dot = document.querySelector('.pdot[data-idx="' + i + '"]');
+          if (el)  el.classList.toggle('active',  i === safe);
+          if (dot) dot.classList.toggle('active', i === safe);
+        }
+      }
+
+      // ── render loop ─────────────────────────────────────────────────
+      function animate() {
+        requestAnimationFrame(animate);
+        scrollCur += (scrollTgt - scrollCur) * LERP;
+
+        const xMove = scrollCur * Math.cos(WALL_Y);
+        const zMove = scrollCur * Math.sin(WALL_Y);
+        camera.position.x = xMove;
+        camera.position.z = CAM_Z - zMove;
+
+        // infinite tiling (wrap around groups)
+        const totalW = SLIDE_COUNT * SPACING_X;
+        paintingGroups.forEach((grp, i) => {
+          const origX = i * SPACING_X;
+          const dist  = scrollCur - origX;
+          const shift = Math.round(dist / totalW) * totalW;
+          grp.position.x = origX + shift;
+        });
+
+        camera.rotation.x =  mouse.y * 0.04;
+        camera.rotation.y = -mouse.x * 0.04;
+
+        syncUI(scrollCur);
+        renderer.render(scene, camera);
+      }
+
+      window.addEventListener('resize', () => {
+        camera.aspect = innerWidth / innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(innerWidth, innerHeight);
+      });
+
+      animate();
+    }
+    // ─── end desktop Three.js block ─────────────────────────────────
+  </script>
+
+</body>
 </html>
