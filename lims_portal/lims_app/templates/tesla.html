@@ -254,6 +254,24 @@ function formatDate(iso) {
     return d.toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' });
   } catch(e) { return ''; }
 }
+
+/* ------- polaroid scroll-reveal ------- */
+(function () {
+  document.body.classList.add('js-animate');
+  var cards = document.querySelectorAll('.polaroid');
+  if (!cards.length) return;
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        var idx = Array.prototype.indexOf.call(cards, entry.target);
+        entry.target.style.animationDelay = (idx % 6) * 65 + 'ms';
+        entry.target.classList.add('card-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  cards.forEach(function (c) { io.observe(c); });
+}());
 </script>
 </body>
 </html>
