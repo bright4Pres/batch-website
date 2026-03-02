@@ -519,31 +519,6 @@ body {
   line-height: 1.45;
 }
 
-/* ---------- little doodle decorations ---------- */
-/* scattered stars via pseudo elements on body */
-.section-hero::before {
-  content: '\2728';
-  position: absolute;
-  top: 20px;
-  left: 8%;
-  font-size: 1.6rem;
-  opacity: 0.5;
-  animation: float 4s ease-in-out infinite;
-}
-.section-hero::after {
-  content: '\1F31F';
-  position: absolute;
-  bottom: 10px;
-  right: 10%;
-  font-size: 1.4rem;
-  opacity: 0.4;
-  animation: float 5s ease-in-out infinite reverse;
-}
-@keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(8deg); }
-}
-
 /* ---------- footer ---------- */
 .section-footer {
   text-align: center;
@@ -571,40 +546,96 @@ body {
 }
 
 /* ---------- responsive ---------- */
+
+/* --- Tablet (≤900px) --- */
+@media (max-width: 900px) {
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 24px;
+  }
+  .modal-photo-wrap { flex: 0 0 220px; }
+  .modal-photo-wrap img { height: 260px; }
+}
+
+/* --- Small tablet / large phone (≤640px) --- */
 @media (max-width: 640px) {
   .section-topnav {
     flex-direction: column;
     align-items: flex-start;
+    gap: 8px;
+    padding: 12px 16px;
   }
+  .section-topnav .nav-links { gap: 6px; flex-wrap: wrap; }
+  .section-topnav .nav-links a { font-size: 0.8rem; padding: 5px 10px; }
+  .section-hero { padding: 36px 16px 24px; }
+  .section-hero h1 { font-size: clamp(2.2rem, 9vw, 3rem); }
   .card-grid {
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
     padding: 20px 14px 40px;
   }
   .polaroid:nth-child(odd),
   .polaroid:nth-child(even),
-  .polaroid:nth-child(3n) {
-    transform: none;
-  }
-  .modal-top {
-    flex-direction: column;
-    padding: 20px 16px 14px;
-  }
-  .modal-photo-wrap {
-    flex: none;
-    width: 100%;
-  }
-  .modal-photo-wrap img {
-    height: 220px;
-  }
-  .msg-section {
-    padding: 16px;
-  }
-  .msg-form .form-row {
-    flex-direction: column;
-  }
+  .polaroid:nth-child(3n) { transform: none; }
+  .profile-overlay { padding: 10px; align-items: flex-end; }
   .profile-modal {
     max-width: 100%;
-    border-radius: 8px;
+    border-radius: 12px 12px 0 0;
+    max-height: 92vh;
   }
+  .modal-top { flex-direction: column; padding: 20px 16px 14px; }
+  .modal-photo-wrap { flex: none; width: 100%; }
+  .modal-photo-wrap img { height: 200px; }
+  .modal-info h2 { font-size: 1.6rem; }
+  .msg-section { padding: 14px 16px 20px; }
+  .msg-form .form-row { flex-direction: column; }
+  .tab-btn { font-size: 0.82rem; padding: 8px 14px; }
+  .comments-list { max-height: 200px; }
+}
+
+/* --- Small phone (≤480px) --- */
+@media (max-width: 480px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 14px 10px 32px;
+  }
+  .polaroid-img { height: 150px; }
+  .polaroid-caption h3 { font-size: 1.1rem; }
+  .polaroid-caption p { display: none; }
+  .section-hero { padding: 28px 14px 18px; }
+  .section-hero h1 { font-size: clamp(1.9rem, 10vw, 2.6rem); }
+  .section-hero .subtitle { font-size: 0.95rem; }
+  .profile-overlay { padding: 0; }
+  .profile-modal { border-radius: 14px 14px 0 0; max-height: 96vh; }
+  .modal-close-btn { font-size: 1.5rem; top: 10px; right: 12px; }
+  .modal-photo-wrap img { height: 165px; }
+  .modal-info h2 { font-size: 1.35rem; }
+  .modal-top { padding: 16px 14px 12px; gap: 14px; }
+  .msg-section { padding: 10px 12px 18px; }
+  .tab-btn { font-size: 0.78rem; padding: 7px 12px; }
+  .submit-btn { font-size: 0.82rem; padding: 8px 18px; }
+}
+
+/* --- Tiny phone (≤360px) --- */
+@media (max-width: 360px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 10px 8px 28px;
+  }
+  .polaroid { padding: 8px 8px 12px; }
+  .polaroid-img { height: 120px; }
+  .polaroid-caption h3 { font-size: 0.95rem; }
+  .section-hero h1 { font-size: clamp(1.7rem, 11vw, 2.2rem); }
+  .section-topnav .nav-links a { font-size: 0.72rem; padding: 4px 8px; }
+  .modal-info h2 { font-size: 1.2rem; }
+}
+
+/* --- Reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .polaroid { transition: none; }
+  .profile-overlay { transition: none; }
+  .section-hero::before, .section-hero::after { animation: none; }
+  img { animation: none; }
 }

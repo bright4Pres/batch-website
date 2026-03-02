@@ -1,6 +1,6 @@
 @keyframes stroke {
   from {
-    stroke-dashoffse: 5414.29;
+    stroke-dashoffset: 5414.29;
   }
   to {
     stroke-dashoffset: 0;
@@ -173,7 +173,6 @@ img {
 }
 
 #scroll-section {
-  container: inline-size;
   display: grid;
   position: relative;
   min-height: 2700px;
@@ -191,9 +190,9 @@ img {
 .anim-overview-stroke {
   stroke-dasharray: 5414.29;
   stroke-dashoffset: 5414.29;
-  animation: stroke linear forwards;
+  animation: stroke auto linear both;
   animation-timeline: scroll();
-  animation-range: -10% 85%;
+  animation-range: 0% 90%;
 }
 
 .container {
@@ -298,6 +297,58 @@ h2 {
   color: #6b5959;
 }
 
+/* ===== polaroid photo frame ===== */
+.photo-frame {
+  background-color: #fff;
+  border: 2px solid #e8e0d8;
+  padding: 8px 8px 44px;
+  border-radius: 3px;
+  position: relative;
+  box-shadow: 4px 5px 0 rgba(0,0,0,0.09);
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  animation: reveal linear both;
+  animation-timeline: view();
+  animation-range: 10% 60%;
+}
+.photo-frame img {
+  display: block;
+  width: 100%;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 1px;
+  animation: none;
+  clip-path: none;
+  border: none;
+}
+.photo-frame figcaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 0.82rem;
+  color: #6b5959;
+  padding: 6px 10px 10px;
+  line-height: 1.3;
+}
+/* washi tape on each photo frame */
+.photo-frame::before {
+  content: '';
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 78px;
+  height: 22px;
+  background-color: #fce4b8;
+  border-radius: 2px;
+  opacity: 0.9;
+  z-index: 2;
+}
+
 /* ----- per-section color identity on home cards ----- */
 /* Curie card — rose */
 .box-1::before { background-color: #fac8da; transform: translateX(-50%) rotate(-2deg); width: 78px; }
@@ -325,23 +376,32 @@ h2 {
   grid-row: span 2;
 }
 
-.image-1 {
+.photo-frame-1 {
   grid-column: 1/span 2;
   grid-row: 2/span 2;
   margin-top: 100px;
+  transform: rotate(-2.5deg);
 }
+.photo-frame-1::before { background-color: #fac8da; transform: translateX(-50%) rotate(-3deg); }
+.photo-frame-1 img { height: 280px; }
 
-.image-2 {
+.photo-frame-2 {
   align-self: end;
   grid-column: 6/span 1;
   grid-row: 5;
+  transform: rotate(2.5deg);
 }
+.photo-frame-2::before { background-color: #a8d4f0; transform: translateX(-50%) rotate(3deg); }
+.photo-frame-2 img { height: 200px; }
 
-.image-3 {
+.photo-frame-3 {
   grid-column: 1/span 2;
   justify-self: end;
   margin-top: 3rem;
+  transform: rotate(-1.5deg);
 }
+.photo-frame-3::before { background-color: #a8d8a8; transform: translateX(-50%) rotate(-1deg); }
+.photo-frame-3 img { height: 240px; }
 
 .box-2 {
   grid-column: 2/span 3;
@@ -364,96 +424,109 @@ h2 {
   height: 50vh;
 }
 
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* --- Tablet landscape (≤1200px) --- */
 @media (max-width: 1200px) {
-  #scroll-section {
-    min-height: 2000px;
-  }
-
-  h2 {
-    text-align: center;
-    margin-inline: auto;
-  }
-
+  #scroll-section { min-height: 2200px; }
+  h2 { text-align: center; margin-inline: auto; }
   .layout-container {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     padding-top: 5rem;
   }
-
-  .layout-container > * {
-    grid-column: span 2;
-  }
-
+  .layout-container > * { grid-column: span 2; }
   .box,
-  .layout-container img {
-    margin-top: 0;
-  }
+  .photo-frame-1, .photo-frame-2, .photo-frame-3 { margin-top: 0; }
+  .photo-frame-1, .photo-frame-2, .photo-frame-3 { transform: none; }
+  .photo-frame-1 img, .photo-frame-2 img, .photo-frame-3 img { height: 260px; }
 }
 
+/* --- Tablet portrait (≤900px) --- */
 @media (max-width: 900px) {
   .page-header {
     height: auto;
     padding: clamp(4rem, 15vw, 6rem) 0 3rem;
   }
-
-  .header-content {
-    padding-inline: clamp(1.25rem, 6vw, 3rem);
-  }
-
+  .header-content { padding-inline: clamp(1.25rem, 6vw, 3rem); }
   .layout-container {
     grid-template-columns: minmax(0, 1fr);
     gap: 1.75rem;
   }
-
-  .layout-container > * {
-    grid-column: 1 / -1;
-  }
-
-  .box {
-    padding: clamp(1.75rem, 6vw, 2.75rem);
-  }
-
-  .image-1,
-  .image-2,
-  .image-3 {
-    margin-top: 0;
+  .layout-container > * { grid-column: 1 / -1; }
+  .box { padding: clamp(1.75rem, 6vw, 2.75rem); }
+  .photo-frame-1, .photo-frame-2, .photo-frame-3 {
     justify-self: center;
+    max-width: 420px;
+    width: 100%;
   }
-
-  h2 {
-    text-align: left;
-  }
+  h2 { text-align: left; }
 }
 
+/* --- Tablet small / large phone landscape (≤768px) --- */
+@media (max-width: 768px) {
+  #scroll-section { min-height: 1600px; }
+  .layout-container { padding-top: 3rem; gap: 1.5rem; }
+  h2 {
+    font-size: clamp(2rem, 8vw, 3rem);
+    width: 100%;
+    text-align: center;
+  }
+  .box { padding: 1.75rem; }
+  .box h3 { font-size: 2rem; }
+  .photo-frame img { height: 220px; }
+}
+
+/* --- Mobile (≤640px) --- */
 @media (max-width: 640px) {
-  body {
-    font-size: 95%;
-  }
+  body { font-size: 95%; }
+  .page-header { padding: 3rem 1rem 2rem; }
+  .header-content h1 { font-size: clamp(2.4rem, 11vw, 3.6rem); }
+  .page-header::after { height: 120px; }
+  .btn { width: 100%; text-align: center; }
+  .line-svg { display: none; }
+  #scroll-section { min-height: auto; }
+  .container { width: 100%; padding-inline: 1rem; }
+  .layout-container { padding-top: 2rem; gap: 1.25rem; }
+  .box h3 { font-size: 1.9rem; }
+  .box p { font-size: 1rem; }
+  h2 { font-size: clamp(1.9rem, 9vw, 2.8rem); }
+  .photo-frame { transform: none !important; max-width: 100%; }
+  .photo-frame img { height: 200px; }
+  .photo-frame figcaption { font-size: 0.78rem; }
+  .photo-frame::before { width: 60px; }
+}
 
-  .page-header::after {
-    height: 120px;
-  }
+/* --- Small phone (≤480px) --- */
+@media (max-width: 480px) {
+  .page-header { padding: 2.5rem 1rem 1.5rem; }
+  .header-content h1 { font-size: clamp(2rem, 12vw, 3rem); }
+  .box { padding: 1.4rem; }
+  .box h3 { font-size: 1.7rem; margin-bottom: 10px; }
+  .box p { font-size: 0.9rem; line-height: 1.55; }
+  .box::before { width: 52px; height: 18px; top: -9px; }
+  .photo-frame img { height: 170px; }
+  .photo-frame { padding: 6px 6px 38px; }
+  .btn { font-size: 0.88rem; height: 42px; line-height: 42px; }
+  .layout-container { gap: 1rem; }
+  h2 { font-size: clamp(1.7rem, 10vw, 2.4rem); }
+}
 
-  .btn {
-    width: 100%;
-  }
+/* --- Tiny phone (≤360px) --- */
+@media (max-width: 360px) {
+  .header-content h1 { font-size: 2rem; }
+  .box { padding: 1.2rem; }
+  .box h3 { font-size: 1.5rem; }
+  .photo-frame img { height: 150px; }
+  .photo-frame { padding: 6px 6px 34px; }
+}
 
-  .line-svg {
-    display: none;
-  }
-
-  #scroll-section {
-    min-height: auto;
-  }
-
-  .container {
-    width: 100%;
-  }
-
-  .box h3 {
-    font-size: 2rem;
-  }
-
-  .box p {
-    font-size: 1rem;
-  }
+/* --- Respect reduced-motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .anim-overview-stroke { animation: none; stroke-dashoffset: 0; }
+  .photo-frame, img { animation: none; }
+  .box { animation: none; }
+  h2 { animation: none; clip-path: none; }
+  .page-header::before { animation: none; }
 }
