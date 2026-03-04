@@ -1,5 +1,4 @@
 {% load static %}
-{% load thumbnail %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,9 +79,7 @@
   {% for s in scholar %}
   <div class="polaroid"
        onclick="openProfile('{{ s.name|escapejs }}', '{{ s.description|escapejs }}', '{{ s.image.url }}', '{{ s.favorite_memory|escapejs }}', '{{ s.future_plans|escapejs }}')">
-    {% thumbnail s.image "300x300" crop="center" as thumb %}
-    <img class="polaroid-img" src="{{ thumb.url }}" loading="lazy" alt="{{ s.name }}">
-    {% endthumbnail %}
+    <img class="polaroid-img" src="{{ s.image.url }}" loading="lazy" alt="{{ s.name }}">
     <div class="polaroid-caption">
       <h3>{{ s.name|title }}</h3>
       <p>{{ s.description|truncatewords:12 }}</p>
