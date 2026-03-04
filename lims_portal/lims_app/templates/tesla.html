@@ -1,4 +1,5 @@
 {% load static %}
+{% load thumbnail %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -75,11 +76,13 @@
 </section>
 
 <!-- ===== CARD GRID ===== -->
-<div class="card-grid">
+  <div class="card-grid">
   {% for s in scholar %}
   <div class="polaroid"
        onclick="openProfile('{{ s.name|escapejs }}', '{{ s.description|escapejs }}', '{{ s.image.url }}', '{{ s.favorite_memory|escapejs }}', '{{ s.future_plans|escapejs }}')">
-    <img class="polaroid-img" src="{{ s.image.url }}" alt="{{ s.name }}">
+    {% thumbnail s.image "360x360" quality=40 as thumb %}
+    <img class="polaroid-img" src="{{ thumb.url }}" data-full-src="{{ s.image.url }}" loading="lazy" alt="{{ s.name }}">
+    {% endthumbnail %}
     <div class="polaroid-caption">
       <h3>{{ s.name|title }}</h3>
       <p>{{ s.description|truncatewords:12 }}</p>
