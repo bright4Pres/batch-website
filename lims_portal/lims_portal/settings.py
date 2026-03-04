@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-(ij_ro1#!0@rxl6(f^m9v5b@2c=_tgg4&6m-v4eq20gv)^%k*h
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 ALLOWED_HOSTS = ["*"]
 
 
