@@ -80,7 +80,9 @@
   {% for s in scholar %}
   <div class="polaroid"
        onclick="openProfile('{{ s.name|escapejs }}', '{{ s.description|escapejs }}', '{{ s.image.url }}', '{{ s.favorite_memory|escapejs }}', '{{ s.future_plans|escapejs }}')">
-    <img class="polaroid-img" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==" data-full-src="{{ s.image.url }}" loading="lazy" alt="{{ s.name }}">
+    {% thumbnail s.image "300x300" crop="center" as thumb %}
+    <img class="polaroid-img" src="{{ thumb.url }}" loading="lazy" alt="{{ s.name }}">
+    {% endthumbnail %}
     <div class="polaroid-caption">
       <h3>{{ s.name|title }}</h3>
       <p>{{ s.description|truncatewords:12 }}</p>
@@ -165,22 +167,6 @@
 <script>
 /* ------- state ------- */
 let currentScholar = '';
-/* set low-res thumbnails for cloudinary images */
-function _lowResUrl(full) {
-  if (!full) return full;
-  try {
-    if (full.indexOf('/upload/') !== -1) return full.replace('/upload/', '/upload/w_360,q_auto:low/');
-  } catch (e) {}
-  return full;
-}
-document.addEventListener('DOMContentLoaded', function(){
-  document.querySelectorAll('.polaroid-img').forEach(function(img){
-    var full = img.getAttribute('data-full-src');
-    var low = _lowResUrl(full);
-    if (low) img.src = low;
-  });
-});
-
 /* ------- profile modal ------- */
 function openProfile(name, desc, imgUrl, memory, plans) {
   currentScholar = name;
