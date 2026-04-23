@@ -78,8 +78,16 @@
   <div class="card-grid">
   {% for s in scholar %}
   <div class="polaroid"
-       onclick="openProfile('{{ s.name|escapejs }}', '{{ s.description|escapejs }}', '{{ s.image.url }}', '{{ s.favorite_memory|escapejs }}', '{{ s.future_plans|escapejs }}')">
-    <img class="polaroid-img" src="{{ s.image.url }}" loading="lazy" alt="{{ s.name }}">
+       data-name="{{ s.name|escape }}"
+       data-desc="{{ s.description|default:'-'|escape }}"
+       data-img="{% if s.image %}{{ s.image.url }}{% else %}{% static 'batcher.jpg' %}{% endif %}"
+       data-memory="{{ s.favorite_memory|default:'-'|escape }}"
+       data-plans="{{ s.future_plans|default:'-'|escape }}"
+       data-likes="{{ s.likes|default:'-'|escape }}"
+       data-dislikes="{{ s.dislikes|default:'-'|escape }}"
+       data-mbti="{{ s.mbti|default:'-'|escape }}"
+       onclick="openProfileFromCard(this)">
+    <img class="polaroid-img" src="{% if s.image %}{{ s.image.url }}{% else %}{% static 'batcher.jpg' %}{% endif %}" loading="lazy" alt="{{ s.name }}">
     <div class="polaroid-caption">
       <h3>{{ s.name|title }}</h3>
       <p>{{ s.description|truncatewords:12 }}</p>
@@ -111,6 +119,12 @@
         <p class="info-text" id="modalMemory"></p>
         <p class="info-label">Future Plans</p>
         <p class="info-text" id="modalPlans"></p>
+        <p class="info-label">Likes</p>
+        <p class="info-text" id="modalLikes"></p>
+        <p class="info-label">Dislikes</p>
+        <p class="info-text" id="modalDislikes"></p>
+        <p class="info-label">MBTI</p>
+        <p class="info-text" id="modalMbti"></p>
       </div>
     </div>
 
@@ -165,13 +179,34 @@
 /* ------- state ------- */
 let currentScholar = '';
 /* ------- profile modal ------- */
-function openProfile(name, desc, imgUrl, memory, plans) {
+function openProfileFromCard(card) {
+  openProfile(
+    card.dataset.name || '-',
+    card.dataset.desc || '-',
+    card.dataset.img || "{% static 'batcher.jpg' %}",
+    card.dataset.memory || '-',
+    card.dataset.plans || '-',
+    card.dataset.likes || '-',
+    card.dataset.dislikes || '-',
+    card.dataset.mbti || '-'
+  );
+}
+
+function openProfile(name, desc, imgUrl, memory, plans, likes, dislikes, mbti) {
   currentScholar = name;
   document.getElementById('modalName').textContent = name;
   document.getElementById('modalDesc').textContent = desc;
-  document.getElementById('modalImg').src = imgUrl;
-  document.getElementById('modalMemory').textContent = memory || '\u2014';
-  document.getElementById('modalPlans').textContent  = plans || '\u2014';
+  var modalImg = document.getElementById('modalImg');
+  modalImg.onerror = function() {
+    this.onerror = null;
+    this.src = "{% static 'batcher.jpg' %}";
+  };
+  modalImg.src = imgUrl || "{% static 'batcher.jpg' %}";
+  document.getElementById('modalMemory').textContent = memory || '-';
+  document.getElementById('modalPlans').textContent  = plans || '-';
+  document.getElementById('modalLikes').textContent = likes || '-';
+  document.getElementById('modalDislikes').textContent = dislikes || '-';
+  document.getElementById('modalMbti').textContent = mbti || '-';
   document.getElementById('profileOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
   loadComments(name);

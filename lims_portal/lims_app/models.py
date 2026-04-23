@@ -12,11 +12,14 @@ class scholarList(models.Model):
     name = models.CharField(max_length=100, help_text="Student's full name")
     description = models.TextField(max_length=1000, help_text="Personal message, achievements, or memories")
     section = models.CharField(max_length=50, choices=sectionChoice, help_text="Student's section")
-    image = models.ImageField(upload_to='student_photos', help_text="Student's photo")
+    image = models.ImageField(upload_to='student_photos', default='student_photos/batcher.jpg', help_text="Student's photo")
     email = models.EmailField(blank=True, help_text="Student's email (for receiving private messages)")
     graduation_year = models.IntegerField(default=2026)
     favorite_memory = models.TextField(max_length=500, blank=True, help_text="Favorite school memory")
     future_plans = models.CharField(max_length=200, blank=True, help_text="Plans after graduation")
+    likes = models.TextField(max_length=500, blank=True, default='-', help_text="Things the student likes")
+    dislikes = models.TextField(max_length=500, blank=True, default='-', help_text="Things the student dislikes")
+    mbti = models.CharField(max_length=10, blank=True, default='-', help_text="Student's MBTI")
     
     def __str__(self):
         return f"{self.name} - {self.section}"

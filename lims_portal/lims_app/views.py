@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.core.cache import cache
 from django.conf import settings
 from .models import scholarList, commenter, PrivateMessage
@@ -85,7 +87,11 @@ def send_private_message(request):
             try:
                 scholar = scholarList.objects.get(name=target_scholar)
                 if scholar.email:
-                    recipients.insert(0, scholar.email)
+                    try:
+                        validate_email(scholar.email)
+                        recipients.insert(0, scholar.email)
+                    except ValidationError:
+                        pass
             except scholarList.DoesNotExist:
                 pass
 

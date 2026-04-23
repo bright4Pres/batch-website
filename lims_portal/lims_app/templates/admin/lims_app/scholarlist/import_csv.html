@@ -1,0 +1,52 @@
+{% extends "admin/base_site.html" %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">Home</a>
+  &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+  &rsaquo; <a href="{% url 'admin:lims_app_scholarlist_changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+  &rsaquo; Import CSV
+</div>
+{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <p class="errornote">{{ form.non_field_errors }}</p>
+    {% endif %}
+
+    <fieldset class="module aligned">
+      <h2>Upload CSV</h2>
+      {% for field in form %}
+        <div class="form-row">
+          {{ field.errors }}
+          {{ field.label_tag }}
+          {{ field }}
+          {% if field.help_text %}
+            <p class="help">{{ field.help_text }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </fieldset>
+
+    <fieldset class="module aligned">
+      <h2>Required Column Order</h2>
+      <ol>
+        {% for column_name in expected_columns %}
+          <li>{{ column_name }}</li>
+        {% endfor %}
+      </ol>
+      <p class="help">If a cell is blank, the importer stores a dash (-).</p>
+      <p class="help">If a photo is missing, the importer uses batcher.jpg as the placeholder image.</p>
+    </fieldset>
+
+    <div class="submit-row">
+      <input type="submit" value="Import CSV" class="default">
+      <a href="{% url 'admin:lims_app_scholarlist_changelist' %}" class="button cancel-link">Back</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
