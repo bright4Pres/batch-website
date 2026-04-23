@@ -50,7 +50,7 @@ def get_comments(request):
 def add_comment(request):
     if request.method == 'POST':
         if rate_limit(request, 'comment', max_hits=5, window_seconds=60):
-            return JsonResponse({'success': False, 'error': 'Too many comments — slow down a bit! 😅'}, status=429)
+            return JsonResponse({'success': False, 'error': 'Too many comments. Please slow down a bit.'}, status=429)
         try:
             comment = commenter(
                 username=request.POST.get('username'),
@@ -67,7 +67,7 @@ def add_comment(request):
 def send_private_message(request):
     if request.method == 'POST':
         if rate_limit(request, 'privmsg', max_hits=3, window_seconds=600):
-            return JsonResponse({'success': False, 'error': 'Too many messages — please wait a few minutes 💌'}, status=429)
+            return JsonResponse({'success': False, 'error': 'Too many messages. Please wait a few minutes.'}, status=429)
         try:
             sender_name = request.POST.get('sender_name')
             sender_email = request.POST.get('sender_email', '')
