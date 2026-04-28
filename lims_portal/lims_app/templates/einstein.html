@@ -177,12 +177,36 @@
 <script>
 /* ------- state ------- */
 let currentScholar = '';
+const DEFAULT_IMAGE = "{% static 'batcher.jpg' %}";
+const COMMENTS_URL = "{% url 'get_comments' %}";
+const ADD_COMMENT_URL = "{% url 'add_comment' %}";
+const SEND_PRIVATE_URL = "{% url 'send_private_message' %}";
+const profileOverlay = document.getElementById('profileOverlay');
+const modalEls = {
+  name: document.getElementById('modalName'),
+  desc: document.getElementById('modalDesc'),
+  img: document.getElementById('modalImg'),
+  memory: document.getElementById('modalMemory'),
+  plans: document.getElementById('modalPlans'),
+  likes: document.getElementById('modalLikes'),
+  dislikes: document.getElementById('modalDislikes'),
+  mbti: document.getElementById('modalMbti')
+};
+const commentFields = {
+  username: document.getElementById('cUsername'),
+  text: document.getElementById('cText')
+};
+const privateFields = {
+  name: document.getElementById('pmName'),
+  email: document.getElementById('pmEmail'),
+  text: document.getElementById('pmText')
+};
 /* ------- profile modal ------- */
 function openProfileFromCard(card) {
   openProfile(
     card.dataset.name || '-',
     card.dataset.desc || '-',
-    card.dataset.img || "{% static 'batcher.jpg' %}",
+    card.dataset.img || DEFAULT_IMAGE,
     card.dataset.memory || '-',
     card.dataset.plans || '-',
     card.dataset.likes || '-',
@@ -193,29 +217,28 @@ function openProfileFromCard(card) {
 
 function openProfile(name, desc, imgUrl, memory, plans, likes, dislikes, mbti) {
   currentScholar = name;
-  document.getElementById('modalName').textContent = name;
-  document.getElementById('modalDesc').textContent = desc;
-  var modalImg = document.getElementById('modalImg');
-  modalImg.onerror = function() {
+  modalEls.name.textContent = name;
+  modalEls.desc.textContent = desc;
+  modalEls.img.onerror = function() {
     this.onerror = null;
-    this.src = "{% static 'batcher.jpg' %}";
+    this.src = DEFAULT_IMAGE;
   };
-  modalImg.src = imgUrl || "{% static 'batcher.jpg' %}";
-  document.getElementById('modalMemory').textContent = memory || '-';
-  document.getElementById('modalPlans').textContent  = plans || '-';
-  document.getElementById('modalLikes').textContent = likes || '-';
-  document.getElementById('modalDislikes').textContent = dislikes || '-';
-  document.getElementById('modalMbti').textContent = mbti || '-';
-  document.getElementById('profileOverlay').classList.add('open');
+  modalEls.img.src = imgUrl || DEFAULT_IMAGE;
+  modalEls.memory.textContent = memory || '-';
+  modalEls.plans.textContent  = plans || '-';
+  modalEls.likes.textContent = likes || '-';
+  modalEls.dislikes.textContent = dislikes || '-';
+  modalEls.mbti.textContent = mbti || '-';
+  profileOverlay.classList.add('open');
   document.body.style.overflow = 'hidden';
   loadComments(name);
   switchTab('comment');
 }
 function closeProfile() {
-  document.getElementById('profileOverlay').classList.remove('open');
+  profileOverlay.classList.remove('open');
   document.body.style.overflow = '';
 }
-document.getElementById('profileOverlay').addEventListener('click', function(e) {
+profileOverlay.addEventListener('click', function(e) {
   if (e.target === this) closeProfile();
 });
 document.addEventListener('keydown', function(e) {
@@ -248,23 +271,20 @@ function hideToast() {
 function loadComments(name) {
   var container = document.getElementById('commentsList');
   container.innerHTML = '<p class="no-comments">Loading...</p>';
-  fetch('/get-comments?scholar=' + encodeURIComponent(name))
+  fetch(COMMENTS_URL + '?scholar=' + encodeURIComponent(name))
     .then(function(r) { return r.json(); })
     .then(function(comments) {
-      container.innerHTML = '';
       if (!comments.length) {
         container.innerHTML = '<p class="no-comments">No comments yet \u2014 be the first one!</p>';
         return;
       }
-      comments.forEach(function(c) {
-        var d = document.createElement('div');
-        d.className = 'comment-bubble';
-        d.innerHTML =
+      container.innerHTML = comments.map(function(c) {
+        return '<div class="comment-bubble">' +
           '<div class="cb-user">' + escHtml(c.username) + '</div>' +
           '<div class="cb-text">' + escHtml(c.comment) + '</div>' +
-          (c.created_at ? '<div class="cb-time">' + formatDate(c.created_at) + '</div>' : '');
-        container.appendChild(d);
-      });
+          (c.created_at ? '<div class="cb-time">' + formatDate(c.created_at) + '</div>' : '') +
+        '</div>';
+      }).join('');
     })
     .catch(function() {
       container.innerHTML = '<p class="no-comments">Could not load comments.</p>';
@@ -275,15 +295,14 @@ function loadComments(name) {
 function submitComment(e) {
   e.preventDefault();
   var fd = new FormData();
-  fd.append('username', document.getElementById('cUsername').value.trim());
-  fd.append('comment', document.getElementById('cText').value.trim());
+  fd.append('username', commentFields.username.value.trim());
+  fd.append('comment', commentFields.text.value.trim());
   fd.append('targetScholar', currentScholar);
-  fetch('/add-comment/', { method:'POST', body:fd, headers:{'X-CSRFToken':getCookie('csrftoken')}, credentials:'same-origin' })
-    .then(function(r) { return r.json(); })
+  postForm(ADD_COMMENT_URL, fd)
     .then(function(data) {
       if (data.success) {
         showToast('coment oposted', 'success');
-        document.getElementById('cText').value = '';
+        commentFields.text.value = '';
         loadComments(currentScholar);
       } else {
         showToast('Failed: ' + (data.error || 'Unknown error'), 'error');
@@ -296,16 +315,15 @@ function submitComment(e) {
 function submitPrivate(e) {
   e.preventDefault();
   var fd = new FormData();
-  fd.append('sender_name', document.getElementById('pmName').value.trim());
-  fd.append('sender_email', document.getElementById('pmEmail').value.trim());
-  fd.append('message', document.getElementById('pmText').value.trim());
+  fd.append('sender_name', privateFields.name.value.trim());
+  fd.append('sender_email', privateFields.email.value.trim());
+  fd.append('message', privateFields.text.value.trim());
   fd.append('targetScholar', currentScholar);
-  fetch('/send-private-message/', { method:'POST', body:fd, headers:{'X-CSRFToken':getCookie('csrftoken')}, credentials:'same-origin' })
-    .then(function(r) { return r.json(); })
+  postForm(SEND_PRIVATE_URL, fd)
     .then(function(data) {
       if (data.success) {
         showToast('Message sent privately! They will love it.', 'success');
-        document.getElementById('pmText').value = '';
+        privateFields.text.value = '';
       } else {
         showToast('Failed: ' + (data.error || 'Unknown error'), 'error');
       }
@@ -323,6 +341,14 @@ function getCookie(name) {
     });
   }
   return v;
+}
+function postForm(url, fd) {
+  return fetch(url, {
+    method: 'POST',
+    body: fd,
+    headers: { 'X-CSRFToken': getCookie('csrftoken') },
+    credentials: 'same-origin'
+  }).then(function(r) { return r.json(); });
 }
 function escHtml(s) {
   var d = document.createElement('div');

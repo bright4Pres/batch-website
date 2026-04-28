@@ -26,6 +26,12 @@ def rate_limit(request, key_prefix, max_hits, window_seconds):
     cache.set(cache_key, count + 1, timeout=window_seconds)
     return False
 
+
+def recipient_cooldown(key_prefix, recipient_key, window_seconds):
+    """Returns True (blocked) if the recipient is still inside the cooldown window."""
+    cache_key = f'cooldown:{key_prefix}:{recipient_key}'
+    return not cache.add(cache_key, True, timeout=window_seconds)
+
 def home(request):
     return render(request, "home.html", context={"current_tab": "home"})
 
@@ -66,13 +72,17 @@ def add_comment(request):
 @csrf_exempt
 def send_private_message(request):
     if request.method == 'POST':
-        if rate_limit(request, 'privmsg', max_hits=3, window_seconds=600):
-            return JsonResponse({'success': False, 'error': 'Too many messages. Please wait a few minutes.'}, status=429)
         try:
-            sender_name = request.POST.get('sender_name')
+            sender_name = request.POST.get('sender_name', '').strip()
             sender_email = request.POST.get('sender_email', '')
-            message = request.POST.get('message')
-            target_scholar = request.POST.get('targetScholar')
+            message = request.POST.get('message', '').strip()
+            target_scholar = request.POST.get('targetScholar', '').strip()
+
+            if not target_scholar:
+                return JsonResponse({'success': False, 'error': 'Missing target scholar.'}, status=400)
+
+            if recipient_cooldown('privmsg', target_scholar.lower().strip(), window_seconds=5):
+                return JsonResponse({'success': False, 'error': 'That student was just messaged. Please wait a few seconds before sending again.'}, status=429)
 
             msg = PrivateMessage(
                 sender_name=sender_name,
@@ -84,16 +94,13 @@ def send_private_message(request):
 
             # Build recipient list: student's email + admin
             recipients = [settings.EMAIL_HOST_USER]
-            try:
-                scholar = scholarList.objects.get(name=target_scholar)
-                if scholar.email:
-                    try:
-                        validate_email(scholar.email)
-                        recipients.insert(0, scholar.email)
-                    except ValidationError:
-                        pass
-            except scholarList.DoesNotExist:
-                pass
+            scholar = scholarList.objects.filter(name=target_scholar).only('email').first()
+            if scholar and scholar.email:
+                try:
+                    validate_email(scholar.email)
+                    recipients.insert(0, scholar.email)
+                except ValidationError:
+                    pass
 
             # Send email notification
             reply_info = f'Reply to them: {sender_email}' if sender_email else 'No reply email provided'
@@ -109,7 +116,7 @@ def send_private_message(request):
                 message=email_body,
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=recipients,
-                fail_silently=True,
+                fail_silently=False,
             )
 
             return JsonResponse({'success': True})
