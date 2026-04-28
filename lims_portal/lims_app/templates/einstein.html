@@ -245,8 +245,16 @@ function closeProfile() {
   document.body.style.overflow = '';
 }
 
+function makeAbsoluteUrl(maybeRelative) {
+  try {
+    return new URL(maybeRelative, window.location.origin).toString();
+  } catch (e) {
+    return window.location.href;
+  }
+}
+
 function copyScholarLink() {
-  var link = currentScholarUrl || window.location.href;
+  var link = makeAbsoluteUrl(currentScholarUrl || window.location.href);
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(link).then(function() {
       showToast('Link copied!', 'success');

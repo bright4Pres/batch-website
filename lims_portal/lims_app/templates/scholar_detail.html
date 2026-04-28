@@ -21,92 +21,106 @@
   </ul>
 </nav>
 
-<div class="profile-overlay open" id="profileOverlay">
-  <div class="profile-modal">
-    <div class="modal-header">
-      <div class="modal-header-actions">
+<main class="scholar-profile">
+  <!-- ===== HERO SECTION ===== -->
+  <section class="scholar-hero">
+    <div class="hero-back-btn">
+      <a href="{{ section_url }}" class="btn-back" onclick="event.preventDefault(); window.history.back();">&larr; Back</a>
+    </div>
+    <div class="hero-content">
+      <div class="hero-photo">
+        <img id="modalImg" src="{% if scholar.image %}{{ scholar.image.url }}{% else %}{% static 'batcher.jpg' %}{% endif %}" alt="{{ scholar.name }} photo" class="profile-img">
+      </div>
+      <div class="hero-info">
+        <h1 id="modalName" class="scholar-name">{{ scholar.name }}</h1>
+        <p class="scholar-section">{{ scholar.section }} Batch 2026</p>
         <button class="copy-link-btn" onclick="copyScholarLink()" type="button">Copy Link</button>
-        <button class="modal-close-btn" onclick="closeProfile()" aria-label="Back to section">&times;</button>
       </div>
     </div>
-    <div class="modal-body">
-      <div class="modal-top">
-        <div class="modal-photo-wrap">
-          <img id="modalImg" src="{% if scholar.image %}{{ scholar.image.url }}{% else %}{% static 'batcher.jpg' %}{% endif %}" alt="Student photo">
-        </div>
-        <div class="modal-info">
-          <h2 id="modalName">{{ scholar.name }}</h2>
-          <p class="info-label">About</p>
-          <p class="info-text" id="modalDesc">{{ scholar.description }}</p>
-          <p class="info-label">Favorite Memory</p>
-          <p class="info-text" id="modalMemory">{{ scholar.favorite_memory|default:'-' }}</p>
-          <p class="info-label">Future Plans</p>
-          <p class="info-text" id="modalPlans">{{ scholar.future_plans|default:'-' }}</p>
-          <p class="info-label">Likes</p>
-          <p class="info-text" id="modalLikes">{{ scholar.likes|default:'-' }}</p>
-          <p class="info-label">Dislikes</p>
-          <p class="info-text" id="modalDislikes">{{ scholar.dislikes|default:'-' }}</p>
-          <p class="info-text" id="modalMbti" style="margin-top: 10px">{{ scholar.mbti|default:'-' }}</p>
-        </div>
-      </div>
+  </section>
 
-      <div class="msg-section">
-        <div class="tab-row">
-          <button class="tab-btn active" data-tab="comment" onclick="switchTab('comment')">Public Comment</button>
-          <button class="tab-btn" data-tab="private" onclick="switchTab('private')">Private Message</button>
-        </div>
-
-        <div class="toast-msg" id="toastMsg"></div>
-
-        <div class="tab-panel active" id="panel-comment">
-          <form class="msg-form" onsubmit="submitComment(event)">
-            <div class="form-row">
-              <input type="text" id="cUsername" placeholder="Your name" required maxlength="50">
-            </div>
-            <textarea id="cText" placeholder="Write something nice..." required maxlength="500"></textarea>
-            <button type="submit" class="submit-btn">Post Comment</button>
-          </form>
-          <div class="comments-list" id="commentsList"></div>
-        </div>
-
-        <div class="tab-panel" id="panel-private">
-          <div class="pm-note">
-            This message will only be visible to them &mdash; like a personal letter.
-          </div>
-          <form class="msg-form" onsubmit="submitPrivate(event)">
-            <div class="form-row">
-              <input type="text" id="pmName" placeholder="Your name" required maxlength="100">
-              <input type="email" id="pmEmail" placeholder="Your email (optional)">
-            </div>
-            <textarea id="pmText" placeholder="Write your private message here..." required maxlength="2000"></textarea>
-            <button type="submit" class="submit-btn">Send Privately</button>
-          </form>
-        </div>
-      </div>
+  <!-- ===== INFO CARDS ===== -->
+  <section class="scholar-info-grid">
+    <div class="info-card">
+      <h3 class="info-card-title">About</h3>
+      <p class="info-card-text" id="modalDesc">{{ scholar.description }}</p>
     </div>
-  </div>
-</div>
+    <div class="info-card">
+      <h3 class="info-card-title">Favorite Memory</h3>
+      <p class="info-card-text" id="modalMemory">{{ scholar.favorite_memory|default:'-' }}</p>
+    </div>
+    <div class="info-card">
+      <h3 class="info-card-title">Future Plans</h3>
+      <p class="info-card-text" id="modalPlans">{{ scholar.future_plans|default:'-' }}</p>
+    </div>
+    <div class="info-card">
+      <h3 class="info-card-title">Likes</h3>
+      <p class="info-card-text" id="modalLikes">{{ scholar.likes|default:'-' }}</p>
+    </div>
+    <div class="info-card">
+      <h3 class="info-card-title">Dislikes</h3>
+      <p class="info-card-text" id="modalDislikes">{{ scholar.dislikes|default:'-' }}</p>
+    </div>
+    <div class="info-card">
+      <h3 class="info-card-title">MBTI</h3>
+      <p class="info-card-text" id="modalMbti" style="font-size: 1.3rem; font-weight: 700;">{{ scholar.mbti|default:'-' }}</p>
+    </div>
+  </section>
+
+  <!-- ===== INTERACTION SECTION ===== -->
+  <section class="msg-section">
+    <h2 class="msg-section-title">Leave a Message</h2>
+
+    <div class="tab-row">
+      <button class="tab-btn active" data-tab="comment" onclick="switchTab('comment')">Public Comment</button>
+      <button class="tab-btn" data-tab="private" onclick="switchTab('private')">Private Message</button>
+    </div>
+
+    <div class="toast-msg" id="toastMsg"></div>
+
+    <div class="tab-panel active" id="panel-comment">
+      <form class="msg-form" onsubmit="submitComment(event)">
+        <div class="form-row">
+          <input type="text" id="cUsername" placeholder="Your name" required maxlength="50">
+        </div>
+        <textarea id="cText" placeholder="Write something nice..." required maxlength="500"></textarea>
+        <button type="submit" class="submit-btn">Post Comment</button>
+      </form>
+      <div class="comments-list" id="commentsList"></div>
+    </div>
+
+    <div class="tab-panel" id="panel-private">
+      <div class="pm-note">
+        This message will only be visible to them &mdash; like a personal letter.
+      </div>
+      <form class="msg-form" onsubmit="submitPrivate(event)">
+        <div class="form-row">
+          <input type="text" id="pmName" placeholder="Your name" required maxlength="100">
+          <input type="email" id="pmEmail" placeholder="Your email (optional)">
+        </div>
+        <textarea id="pmText" placeholder="Write your private message here..." required maxlength="2000"></textarea>
+        <button type="submit" class="submit-btn">Send Privately</button>
+      </form>
+    </div>
+  </section>
+</main>
 
 <script>
 /* ------- state ------- */
 let currentScholar = "{{ scholar.name|escapejs }}";
-let currentScholarUrl = window.location.href;
+const DETAIL_URL = "{% url 'scholar_detail' scholar.pk %}";
+let currentScholarUrl = DETAIL_URL || window.location.href;
 const DEFAULT_IMAGE = "{% static 'batcher.jpg' %}";
 const COMMENTS_URL = "{% url 'get_comments' %}";
 const ADD_COMMENT_URL = "{% url 'add_comment' %}";
 const SEND_PRIVATE_URL = "{% url 'send_private_message' %}";
-const SECTION_URL = "{{ section_url }}";
-const profileOverlay = document.getElementById('profileOverlay');
-const modalEls = {
-  name: document.getElementById('modalName'),
-  desc: document.getElementById('modalDesc'),
-  img: document.getElementById('modalImg'),
-  memory: document.getElementById('modalMemory'),
-  plans: document.getElementById('modalPlans'),
-  likes: document.getElementById('modalLikes'),
-  dislikes: document.getElementById('modalDislikes'),
-  mbti: document.getElementById('modalMbti')
+
+const profileImg = document.getElementById('modalImg');
+profileImg.onerror = function() {
+  this.onerror = null;
+  this.src = DEFAULT_IMAGE;
 };
+
 const commentFields = {
   username: document.getElementById('cUsername'),
   text: document.getElementById('cText')
@@ -117,24 +131,16 @@ const privateFields = {
   text: document.getElementById('pmText')
 };
 
-modalEls.img.onerror = function() {
-  this.onerror = null;
-  this.src = DEFAULT_IMAGE;
-};
-
-profileOverlay.addEventListener('click', function(e) {
-  if (e.target === this) closeProfile();
-});
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeProfile();
-});
-
-function closeProfile() {
-  window.location.href = SECTION_URL;
+function makeAbsoluteUrl(maybeRelative) {
+  try {
+    return new URL(maybeRelative, window.location.origin).toString();
+  } catch (e) {
+    return window.location.href;
+  }
 }
 
 function copyScholarLink() {
-  var link = currentScholarUrl || window.location.href;
+  var link = makeAbsoluteUrl(DETAIL_URL || currentScholarUrl || window.location.href);
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(link).then(function() {
       showToast('Link copied!', 'success');
