@@ -388,6 +388,7 @@ body {
   border-bottom: 1px solid var(--modal-stroke);
 }
 .modal-photo-wrap {
+  height:max-content;
   background-color: var(--modal-card);
   border: 2px solid var(--modal-stroke);
   border-radius: 14px;
