@@ -86,6 +86,7 @@
        data-likes="{{ s.likes|default:'-'|escape }}"
        data-dislikes="{{ s.dislikes|default:'-'|escape }}"
        data-mbti="{{ s.mbti|default:'-'|escape }}"
+       data-url="{% url 'scholar_detail' s.pk %}"
        onclick="openProfileFromCard(this)">
     <img class="polaroid-img" src="{% if s.image %}{{ s.image.url }}{% else %}{% static 'batcher.jpg' %}{% endif %}" loading="lazy" alt="{{ s.name }}">
     <div class="polaroid-caption">
@@ -104,7 +105,10 @@
 <div class="profile-overlay" id="profileOverlay">
   <div class="profile-modal">
     <div class="modal-header">
-      <button class="modal-close-btn" onclick="closeProfile()" aria-label="Close">&times;</button>
+      <div class="modal-header-actions">
+        <button class="copy-link-btn" onclick="copyScholarLink()" type="button">Copy Link</button>
+        <button class="modal-close-btn" onclick="closeProfile()" aria-label="Close">&times;</button>
+      </div>
     </div>
     <div class="modal-body">
     <div class="modal-top">
@@ -177,6 +181,7 @@
 <script>
 /* ------- state ------- */
 let currentScholar = '';
+let currentScholarUrl = window.location.href;
 const DEFAULT_IMAGE = "{% static 'batcher.jpg' %}";
 const COMMENTS_URL = "{% url 'get_comments' %}";
 const ADD_COMMENT_URL = "{% url 'add_comment' %}";
@@ -203,6 +208,7 @@ const privateFields = {
 };
 /* ------- profile modal ------- */
 function openProfileFromCard(card) {
+  currentScholarUrl = card.dataset.url || window.location.href;
   openProfile(
     card.dataset.name || '-',
     card.dataset.desc || '-',
@@ -237,6 +243,36 @@ function openProfile(name, desc, imgUrl, memory, plans, likes, dislikes, mbti) {
 function closeProfile() {
   profileOverlay.classList.remove('open');
   document.body.style.overflow = '';
+}
+
+function copyScholarLink() {
+  var link = currentScholarUrl || window.location.href;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(link).then(function() {
+      showToast('Link copied!', 'success');
+    }).catch(function() {
+      fallbackCopyText(link);
+    });
+    return;
+  }
+  fallbackCopyText(link);
+}
+
+function fallbackCopyText(text) {
+  var temp = document.createElement('textarea');
+  temp.value = text;
+  temp.setAttribute('readonly', 'readonly');
+  temp.style.position = 'fixed';
+  temp.style.left = '-9999px';
+  document.body.appendChild(temp);
+  temp.select();
+  try {
+    document.execCommand('copy');
+    showToast('Link copied!', 'success');
+  } catch (err) {
+    showToast('Could not copy link.', 'error');
+  }
+  document.body.removeChild(temp);
 }
 profileOverlay.addEventListener('click', function(e) {
   if (e.target === this) closeProfile();

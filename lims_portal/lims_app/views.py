@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.http import JsonResponse
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.core.exceptions import ValidationError
@@ -46,6 +47,19 @@ def einstein(request):
 def curie(request):
     curie_scholar = scholarList.objects.filter(section="Curie")
     return render(request, "curie.html", context={"current_tab": "curie", "scholar": curie_scholar})
+
+
+def scholar_detail(request, pk):
+    scholar = get_object_or_404(scholarList, pk=pk)
+    return render(
+        request,
+        "scholar_detail.html",
+        context={
+            "current_tab": scholar.section.lower(),
+            "scholar": scholar,
+            "section_url": reverse(scholar.section.lower()),
+        },
+    )
 
 def get_comments(request):
     scholar_name = request.GET.get('scholar')

@@ -320,9 +320,43 @@ body {
   background-color: var(--modal-panel);
 }
 
+.modal-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-link-btn,
+.modal-close-btn {
+  height: 34px;
+  border: 2px solid var(--modal-stroke);
+  border-radius: 999px;
+  background-color: var(--modal-card);
+  color: var(--modal-muted);
+  cursor: pointer;
+  transition: transform 0.15s, color 0.2s, border-color 0.2s, background-color 0.2s;
+  padding: 0 12px;
+}
+
+.copy-link-btn {
+  min-width: 92px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.copy-link-btn:hover,
+.modal-close-btn:hover {
+  color: var(--accent-dark);
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
 .modal-close-btn {
   width: 34px;
-  height: 34px;
+  font-size: 1.5rem;
+  line-height: 28px;
+  text-align: center;
   border: 2px solid var(--modal-stroke);
   border-radius: 999px;
   background-color: var(--modal-card);

@@ -1,0 +1,287 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ scholar.name }} - {{ scholar.section }} Antuilan 2026</title>
+  <link rel="stylesheet" href="https://public.codepenassets.com/css/normalize-5.0.0.min.css">
+  <link rel="stylesheet" href="{% static 'Scripts/section.css' %}">
+  <link rel="icon" href="{% static 'antuilanlogo.png' %}">
+</head>
+<body class="section-{{ scholar.section|lower }}">
+
+<nav class="section-topnav">
+  <a class="nav-brand" href="{% url 'home' %}">Batch 2026</a>
+  <ul class="nav-links">
+    <li><a href="{% url 'home' %}">Home</a></li>
+    <li><a href="{% url 'curie' %}"{% if current_tab == 'curie' %} class="active"{% endif %}>Curie</a></li>
+    <li><a href="{% url 'einstein' %}"{% if current_tab == 'einstein' %} class="active"{% endif %}>Einstein</a></li>
+    <li><a href="{% url 'tesla' %}"{% if current_tab == 'tesla' %} class="active"{% endif %}>Tesla</a></li>
+  </ul>
+</nav>
+
+<div class="profile-overlay open" id="profileOverlay">
+  <div class="profile-modal">
+    <div class="modal-header">
+      <div class="modal-header-actions">
+        <button class="copy-link-btn" onclick="copyScholarLink()" type="button">Copy Link</button>
+        <button class="modal-close-btn" onclick="closeProfile()" aria-label="Back to section">&times;</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-top">
+        <div class="modal-photo-wrap">
+          <img id="modalImg" src="{% if scholar.image %}{{ scholar.image.url }}{% else %}{% static 'batcher.jpg' %}{% endif %}" alt="Student photo">
+        </div>
+        <div class="modal-info">
+          <h2 id="modalName">{{ scholar.name }}</h2>
+          <p class="info-label">About</p>
+          <p class="info-text" id="modalDesc">{{ scholar.description }}</p>
+          <p class="info-label">Favorite Memory</p>
+          <p class="info-text" id="modalMemory">{{ scholar.favorite_memory|default:'-' }}</p>
+          <p class="info-label">Future Plans</p>
+          <p class="info-text" id="modalPlans">{{ scholar.future_plans|default:'-' }}</p>
+          <p class="info-label">Likes</p>
+          <p class="info-text" id="modalLikes">{{ scholar.likes|default:'-' }}</p>
+          <p class="info-label">Dislikes</p>
+          <p class="info-text" id="modalDislikes">{{ scholar.dislikes|default:'-' }}</p>
+          <p class="info-text" id="modalMbti" style="margin-top: 10px">{{ scholar.mbti|default:'-' }}</p>
+        </div>
+      </div>
+
+      <div class="msg-section">
+        <div class="tab-row">
+          <button class="tab-btn active" data-tab="comment" onclick="switchTab('comment')">Public Comment</button>
+          <button class="tab-btn" data-tab="private" onclick="switchTab('private')">Private Message</button>
+        </div>
+
+        <div class="toast-msg" id="toastMsg"></div>
+
+        <div class="tab-panel active" id="panel-comment">
+          <form class="msg-form" onsubmit="submitComment(event)">
+            <div class="form-row">
+              <input type="text" id="cUsername" placeholder="Your name" required maxlength="50">
+            </div>
+            <textarea id="cText" placeholder="Write something nice..." required maxlength="500"></textarea>
+            <button type="submit" class="submit-btn">Post Comment</button>
+          </form>
+          <div class="comments-list" id="commentsList"></div>
+        </div>
+
+        <div class="tab-panel" id="panel-private">
+          <div class="pm-note">
+            This message will only be visible to them &mdash; like a personal letter.
+          </div>
+          <form class="msg-form" onsubmit="submitPrivate(event)">
+            <div class="form-row">
+              <input type="text" id="pmName" placeholder="Your name" required maxlength="100">
+              <input type="email" id="pmEmail" placeholder="Your email (optional)">
+            </div>
+            <textarea id="pmText" placeholder="Write your private message here..." required maxlength="2000"></textarea>
+            <button type="submit" class="submit-btn">Send Privately</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ------- state ------- */
+let currentScholar = "{{ scholar.name|escapejs }}";
+let currentScholarUrl = window.location.href;
+const DEFAULT_IMAGE = "{% static 'batcher.jpg' %}";
+const COMMENTS_URL = "{% url 'get_comments' %}";
+const ADD_COMMENT_URL = "{% url 'add_comment' %}";
+const SEND_PRIVATE_URL = "{% url 'send_private_message' %}";
+const SECTION_URL = "{{ section_url }}";
+const profileOverlay = document.getElementById('profileOverlay');
+const modalEls = {
+  name: document.getElementById('modalName'),
+  desc: document.getElementById('modalDesc'),
+  img: document.getElementById('modalImg'),
+  memory: document.getElementById('modalMemory'),
+  plans: document.getElementById('modalPlans'),
+  likes: document.getElementById('modalLikes'),
+  dislikes: document.getElementById('modalDislikes'),
+  mbti: document.getElementById('modalMbti')
+};
+const commentFields = {
+  username: document.getElementById('cUsername'),
+  text: document.getElementById('cText')
+};
+const privateFields = {
+  name: document.getElementById('pmName'),
+  email: document.getElementById('pmEmail'),
+  text: document.getElementById('pmText')
+};
+
+modalEls.img.onerror = function() {
+  this.onerror = null;
+  this.src = DEFAULT_IMAGE;
+};
+
+profileOverlay.addEventListener('click', function(e) {
+  if (e.target === this) closeProfile();
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeProfile();
+});
+
+function closeProfile() {
+  window.location.href = SECTION_URL;
+}
+
+function copyScholarLink() {
+  var link = currentScholarUrl || window.location.href;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(link).then(function() {
+      showToast('Link copied!', 'success');
+    }).catch(function() {
+      fallbackCopyText(link);
+    });
+    return;
+  }
+  fallbackCopyText(link);
+}
+
+function fallbackCopyText(text) {
+  var temp = document.createElement('textarea');
+  temp.value = text;
+  temp.setAttribute('readonly', 'readonly');
+  temp.style.position = 'fixed';
+  temp.style.left = '-9999px';
+  document.body.appendChild(temp);
+  temp.select();
+  try {
+    document.execCommand('copy');
+    showToast('Link copied!', 'success');
+  } catch (err) {
+    showToast('Could not copy link.', 'error');
+  }
+  document.body.removeChild(temp);
+}
+
+/* ------- tabs ------- */
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(function(b) {
+    if (b.getAttribute('data-tab') === tab) b.classList.add('active');
+  });
+  hideToast();
+}
+
+/* ------- toast ------- */
+function showToast(msg, type) {
+  var t = document.getElementById('toastMsg');
+  t.textContent = msg;
+  t.className = 'toast-msg show ' + type;
+  setTimeout(function() { t.className = 'toast-msg'; }, 3500);
+}
+function hideToast() {
+  document.getElementById('toastMsg').className = 'toast-msg';
+}
+
+/* ------- load comments ------- */
+function loadComments(name) {
+  var container = document.getElementById('commentsList');
+  container.innerHTML = '<p class="no-comments">Loading...</p>';
+  fetch(COMMENTS_URL + '?scholar=' + encodeURIComponent(name))
+    .then(function(r) { return r.json(); })
+    .then(function(comments) {
+      if (!comments.length) {
+        container.innerHTML = '<p class="no-comments">No comments yet \u2014 be the first one!</p>';
+        return;
+      }
+      container.innerHTML = comments.map(function(c) {
+        return '<div class="comment-bubble">' +
+          '<div class="cb-user">' + escHtml(c.username) + '</div>' +
+          '<div class="cb-text">' + escHtml(c.comment) + '</div>' +
+          (c.created_at ? '<div class="cb-time">' + formatDate(c.created_at) + '</div>' : '') +
+        '</div>';
+      }).join('');
+    })
+    .catch(function() {
+      container.innerHTML = '<p class="no-comments">Could not load comments.</p>';
+    });
+}
+
+/* ------- submit public comment ------- */
+function submitComment(e) {
+  e.preventDefault();
+  var fd = new FormData();
+  fd.append('username', commentFields.username.value.trim());
+  fd.append('comment', commentFields.text.value.trim());
+  fd.append('targetScholar', currentScholar);
+  postForm(ADD_COMMENT_URL, fd)
+    .then(function(data) {
+      if (data.success) {
+        showToast('coment oposted', 'success');
+        commentFields.text.value = '';
+        loadComments(currentScholar);
+      } else {
+        showToast('Failed: ' + (data.error || 'Unknown error'), 'error');
+      }
+    })
+    .catch(function() { showToast('Network error, try again.', 'error'); });
+}
+
+/* ------- submit private message ------- */
+function submitPrivate(e) {
+  e.preventDefault();
+  var fd = new FormData();
+  fd.append('sender_name', privateFields.name.value.trim());
+  fd.append('sender_email', privateFields.email.value.trim());
+  fd.append('message', privateFields.text.value.trim());
+  fd.append('targetScholar', currentScholar);
+  postForm(SEND_PRIVATE_URL, fd)
+    .then(function(data) {
+      if (data.success) {
+        showToast('Message sent privately! They will love it.', 'success');
+        privateFields.text.value = '';
+      } else {
+        showToast('Failed: ' + (data.error || 'Unknown error'), 'error');
+      }
+    })
+    .catch(function() { showToast('Network error, try again.', 'error'); });
+}
+
+/* ------- helpers ------- */
+function postForm(url, fd) {
+  return fetch(url, {
+    method: 'POST',
+    body: fd,
+    headers: { 'X-CSRFToken': getCookie('csrftoken') },
+    credentials: 'same-origin'
+  }).then(function(r) { return r.json(); });
+}
+function getCookie(name) {
+  var v = null;
+  if (document.cookie) {
+    document.cookie.split(';').forEach(function(c) {
+      c = c.trim();
+      if (c.startsWith(name + '=')) v = decodeURIComponent(c.substring(name.length + 1));
+    });
+  }
+  return v;
+}
+function escHtml(s) {
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(s));
+  return d.innerHTML;
+}
+function formatDate(iso) {
+  try {
+    var d = new Date(iso);
+    return d.toLocaleDateString('en-PH', { month:'short', day:'numeric', year:'numeric' });
+  } catch(e) { return ''; }
+}
+
+loadComments(currentScholar);
+switchTab('comment');
+</script>
+</body>
+</html>
