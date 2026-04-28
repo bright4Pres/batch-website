@@ -1,16 +1,16 @@
-/* base.css - Specific styles for base.html */
+/* base.css stuff for base.html, nothing fancy */
 
-/* Scholar cards container */
+/* main wrapper that holds the scholar cards */
 .animated-text#animatedText {
   width: 90%;
   max-width: 1400px;
   max-height: 80vh;
   overflow-y: auto;
   padding: 1rem;
-  pointer-events: auto; /* Allow interaction with cards */
+  pointer-events: auto; /* let cards be clickable */
 }
 
-/* Scholar cards grid */
+/* grid layout for the cards */
 #main-content {
   width: 100%;
   padding: 2rem;
@@ -24,7 +24,7 @@
   margin: 0 auto;
 }
 
-/* Individual card styling */
+/* single card styling */
 .scholar-card {
   width: 25em;
   background: rgba(30, 30, 30, 0.85);
@@ -60,7 +60,7 @@
   font-size: 1rem;
 }
 
-/* Count text */
+/* count line at the top */
 .scholar-count {
   text-align: center;
   color: white;

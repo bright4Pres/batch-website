@@ -22,7 +22,7 @@
 </nav>
 
 <main class="scholar-profile">
-  <!-- ===== HERO SECTION ===== -->
+  <!-- hero area with photo + name -->
   <section class="scholar-hero">
     <div class="hero-back-btn">
       <a href="{{ section_url }}" class="btn-back" onclick="event.preventDefault(); window.history.back();">&larr; Back</a>
@@ -39,7 +39,7 @@
     </div>
   </section>
 
-  <!-- ===== INFO CARDS ===== -->
+  <!-- info cards for bio bits -->
   <section class="scholar-info-grid">
     <div class="info-card">
       <h3 class="info-card-title">About</h3>
@@ -67,7 +67,7 @@
     </div>
   </section>
 
-  <!-- ===== INTERACTION SECTION ===== -->
+  <!-- comment + private message area -->
   <section class="msg-section">
     <h2 class="msg-section-title">Leave a Message</h2>
 
@@ -106,7 +106,7 @@
 </main>
 
 <script>
-/* ------- state ------- */
+/* state and cached nodes */
 let currentScholar = "{{ scholar.name|escapejs }}";
 const DETAIL_URL = "{% url 'scholar_detail' scholar.pk %}";
 let currentScholarUrl = DETAIL_URL || window.location.href;
@@ -169,7 +169,7 @@ function fallbackCopyText(text) {
   document.body.removeChild(temp);
 }
 
-/* ------- tabs ------- */
+/* switch tabs */
 function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
   document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
@@ -180,7 +180,7 @@ function switchTab(tab) {
   hideToast();
 }
 
-/* ------- toast ------- */
+/* tiny toast helper */
 function showToast(msg, type) {
   var t = document.getElementById('toastMsg');
   t.textContent = msg;
@@ -191,7 +191,7 @@ function hideToast() {
   document.getElementById('toastMsg').className = 'toast-msg';
 }
 
-/* ------- load comments ------- */
+/* grab comments */
 function loadComments(name) {
   var container = document.getElementById('commentsList');
   container.innerHTML = '<p class="no-comments">Loading...</p>';
@@ -215,7 +215,7 @@ function loadComments(name) {
     });
 }
 
-/* ------- submit public comment ------- */
+/* send a public comment */
 function submitComment(e) {
   e.preventDefault();
   var fd = new FormData();
@@ -235,7 +235,7 @@ function submitComment(e) {
     .catch(function() { showToast('Network error, try again.', 'error'); });
 }
 
-/* ------- submit private message ------- */
+/* send a private message */
 function submitPrivate(e) {
   e.preventDefault();
   var fd = new FormData();
@@ -255,7 +255,7 @@ function submitPrivate(e) {
     .catch(function() { showToast('Network error, try again.', 'error'); });
 }
 
-/* ------- helpers ------- */
+/* helpers */
 function postForm(url, fd) {
   return fetch(url, {
     method: 'POST',

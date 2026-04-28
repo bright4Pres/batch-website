@@ -1,16 +1,13 @@
-/* ============================================
-   PALANKA SECTION PAGES — scrapbook / bulletin board theme
-   No gradients. Solid colors, doodle borders, warmth.
-   ============================================ */
+/* section pages vibe: scrapbook, warm colors, doodle borders */
 
 @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@400;600;700;800&family=Caveat:wght@500;700&display=swap');
 
-/* ---------- resets ---------- */
+/* reset basics */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ---------- palette variables ---------- */
+/* palette vars */
 :root {
-  /* default — overridden per section */
+  /* defaults, sections override */
   --accent: #d4769a;
   --accent-light: #f5dce6;
   --accent-dark: #a85478;
@@ -23,7 +20,7 @@
   --pin: #e57373;
   --paper-lines: rgba(180,160,140,0.12);
 
-  /* modal palette */
+  /* modal colors */
   --modal-shell: #fff9f2;
   --modal-panel: #f3e7d7;
   --modal-card: #fffdf9;
@@ -32,7 +29,7 @@
   --modal-muted: #6f6052;
 }
 
-/* section-specific palettes — each has a distinct background tint */
+/* per section color swaps */
 .section-curie {
   --accent: #c96090;
   --accent-light: #fce8f0;
@@ -88,13 +85,13 @@
   --modal-muted: #5f6f62;
 }
 
-/* ---------- body ---------- */
+/* body base */
 body {
   font-family: 'Nunito', sans-serif;
   background-color: var(--bg);
   color: var(--ink);
   min-height: 100vh;
-  /* paper-like repeating lines */
+  /* paper-like lines */
   background-image:
     repeating-linear-gradient(
       0deg,
@@ -106,7 +103,7 @@ body {
   background-size: 100% 32px;
 }
 
-/* ---------- top nav strip ---------- */
+/* top nav strip */
 .section-topnav {
   background-color: var(--accent);
   padding: 14px 24px;
@@ -150,7 +147,7 @@ body {
   border-color: #fff;
 }
 
-/* ---------- hero banner ---------- */
+/* hero banner */
 .section-hero {
   text-align: center;
   padding: 50px 20px 30px;
@@ -164,7 +161,7 @@ body {
   position: relative;
   display: inline-block;
 }
-/* underline doodle */
+/* tiny underline doodle */
 .section-hero h1::after {
   content: '';
   position: absolute;
@@ -194,7 +191,7 @@ body {
   border: 2px dashed var(--accent);
 }
 
-/* ---------- card grid ---------- */
+/* card grid */
 .card-grid {
   max-width: 1280px;
   margin: 0 auto;
@@ -204,7 +201,7 @@ body {
   gap: 28px;
 }
 
-/* ---------- polaroid card ---------- */
+/* polaroid card */
 .polaroid {
   background-color: var(--card-bg);
   border: 2px solid #e8e0d8;
@@ -215,7 +212,7 @@ body {
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   box-shadow: 2px 3px 0 rgba(0,0,0,0.06);
 }
-/* slight random rotation for scrapbook feel */
+/* slight tilt for scrapbook vibe */
 .polaroid:nth-child(odd)  { transform: rotate(-1.2deg); }
 .polaroid:nth-child(even) { transform: rotate(0.8deg); }
 .polaroid:nth-child(3n)   { transform: rotate(-0.5deg); }
@@ -275,7 +272,7 @@ body {
   overflow: hidden;
 }
 
-/* ---------- modal overlay ---------- */
+/* modal overlay */
 .profile-overlay {
   position: fixed;
   inset: 0;
@@ -301,7 +298,7 @@ body {
   width: 100%;
   max-width: 860px;
   max-height: 90vh;
-  /* flex column: header never scrolls, body does */
+  /* header stays put, body scrolls */
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -309,7 +306,7 @@ body {
   box-shadow: 0 18px 38px rgba(33, 24, 19, 0.2), 0 8px 0 rgba(0,0,0,0.06);
 }
 
-/* always-visible header strip with the close button */
+/* header strip with close + copy */
 .modal-header {
   flex-shrink: 0;
   display: flex;
@@ -382,7 +379,7 @@ body {
   background-color: var(--modal-shell);
 }
 
-/* modal top section */
+/* top info chunk in modal */
 .modal-top {
   display: grid;
   grid-template-columns: minmax(220px, 280px) 1fr;
@@ -474,7 +471,7 @@ body {
   text-transform: uppercase;
 }
 
-/* ---------- tabs (comment vs private) ---------- */
+/* tabs: comment vs private */
 .msg-section {
   border-top: 1px solid var(--modal-stroke);
   background-color: var(--modal-shell);
@@ -508,7 +505,7 @@ body {
   border-color: var(--accent);
 }
 
-/* ---------- tab panels ---------- */
+/* tab panels */
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
 
@@ -565,7 +562,7 @@ body {
   transform: translateY(-1px);
 }
 
-/* success toast */
+/* toast feedback */
 .toast-msg {
   display: none;
   padding: 8px 16px;
@@ -631,7 +628,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* ---------- private message panel ---------- */
+/* private message panel */
 .pm-note {
   background-color: var(--modal-panel);
   border: 1px solid var(--modal-stroke);
@@ -643,7 +640,7 @@ body {
   line-height: 1.45;
 }
 
-/* ---------- footer ---------- */
+/* footer */
 .section-footer {
   text-align: center;
   padding: 30px 20px;
@@ -660,7 +657,7 @@ body {
 }
 .section-footer a:hover { text-decoration: underline; }
 
-/* ---------- scrollbar ---------- */
+/* scrollbar */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb {
@@ -668,18 +665,16 @@ body {
   border-radius: 4px;
   border: 2px solid var(--bg);
 }
-/* ============================================
-   SCHOLAR PROFILE PAGE — Standalone Profile Layout
-   ============================================ */
+/* scholar detail page layout */
 
-/* ---------- main profile container ---------- */
+/* main profile container */
 .scholar-profile {
   max-width: 1000px;
   margin: 0 auto;
   padding: 30px 20px 60px;
 }
 
-/* ---------- hero section with photo and name ---------- */
+/* hero with photo and name */
 .scholar-hero {
   position: relative;
   margin-bottom: 40px;
@@ -735,7 +730,7 @@ body {
   display: block;
 }
 
-/* silly washi tape on photo */
+/* little washi tape on photo */
 .hero-photo::before {
   content: '';
   position: absolute;
@@ -810,7 +805,7 @@ body {
   box-shadow: 0 4px 0 rgba(0,0,0,0.15);
 }
 
-/* ---------- info cards grid ---------- */
+/* info cards grid */
 .scholar-info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -832,7 +827,7 @@ body {
   box-shadow: 4px 6px 0 rgba(0,0,0,0.10);
 }
 
-/* subtle wobble on different cards */
+/* small wobble on cards */
 .info-card:nth-child(odd) {
   transform: rotate(-0.5deg);
 }
@@ -872,7 +867,7 @@ body {
   margin: 0;
 }
 
-/* ---------- message section ---------- */
+/* message section */
 .msg-section {
   background-color: var(--modal-shell);
   border: 2px solid var(--modal-stroke);
@@ -890,7 +885,7 @@ body {
   text-align: center;
 }
 
-/* ---------- responsive for profile ---------- */
+/* profile responsive tweaks */
 @media (max-width: 768px) {
   .hero-content {
     grid-template-columns: 1fr;
@@ -943,9 +938,9 @@ body {
   }
 }
 
-/* ---------- responsive ---------- */
+/* responsive tweaks */
 
-/* --- Tablet (≤900px) --- */
+/* tablet 900px and down */
 @media (max-width: 900px) {
   .card-grid {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -955,11 +950,11 @@ body {
   .modal-photo-wrap img { height: 260px; }
 }
 
-/* --- Small tablet / large phone (≤640px) --- */
+/* smaller screens 640px and down */
 @media (max-width: 640px) {
-  /* hide the 3 doodles that cluster in the middle/bottom on short hero */
+  /* hide extra doodles on small screens */
   .doodle-3, .doodle-4, .doodle-5 { display: none; }
-  /* pin the two remaining ones tight to the top corners */
+  /* keep the last two doodles in the corners */
   .doodle-1 { top: 8px; left: 8px; width: 36px; height: 50px; }
   .doodle-2 { top: 8px; right: 8px; width: 38px; height: 38px; }
   .section-topnav {
@@ -997,7 +992,7 @@ body {
   .comments-list { max-height: 200px; }
 }
 
-/* --- Small phone (≤480px) --- */
+/* small phones 480px and down */
 @media (max-width: 480px) {
   .card-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1020,7 +1015,7 @@ body {
   .submit-btn { font-size: 0.82rem; padding: 8px 18px; }
 }
 
-/* --- Tiny phone (≤360px) --- */
+/* tiny phones 360px and down */
 @media (max-width: 360px) {
   .card-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1035,11 +1030,9 @@ body {
   .modal-info h2 { font-size: 1.2rem; }
 }
 
-/* ============================================
-   ANIMATIONS & MOBILE POLISH
-   ============================================ */
+/* animations and mobile polish */
 
-/* --- keyframes --- */
+/* keyframes */
 @keyframes fadeSlideUp {
   from { opacity: 0; transform: translateY(28px) rotate(var(--tilt, 0deg)); }
   to   { opacity: 1; transform: translateY(0)   rotate(var(--tilt, 0deg)); }
@@ -1080,7 +1073,7 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* --- hero animations --- */
+/* hero animations */
 .section-hero h1 {
   animation: heroTitleReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -1091,7 +1084,7 @@ body {
   animation: subtitleFade 0.6s ease both 0.45s;
 }
 
-/* --- SVG doodles floating in hero --- */
+/* floating hero doodles */
 .hero-doodles {
   position: absolute;
   inset: 0;
@@ -1118,9 +1111,7 @@ body {
   50%       { transform: translateY(-10px) rotate(-7deg); opacity: 0.85; }
 }
 
-/* --- polaroid scroll-reveal ---
-     JS adds .js-animate to <body> which hides cards until scrolled into view;
-     cards without JS stay visible (graceful degradation) */
+/* reveal cards on scroll when js adds the class */
 .js-animate .polaroid {
   opacity: 0;
 }
@@ -1128,17 +1119,17 @@ body {
   animation: fadeSlideUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
   opacity: 1;
 }
-/* preserve tilt on revealed cards */
+/* keep the tilt when revealed */
 .polaroid.card-visible:nth-child(odd)  { --tilt: -1.2deg; }
 .polaroid.card-visible:nth-child(even) { --tilt:  0.8deg; }
 .polaroid.card-visible:nth-child(3n)   { --tilt: -0.5deg; }
 
-/* --- modal open animation --- */
+/* modal open animation */
 .profile-overlay.open .profile-modal {
   animation: modalSpring 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* --- submit button --- */
+/* submit button tweaks */
 .submit-btn:hover {
   animation: none;
 }
@@ -1146,18 +1137,18 @@ body {
   animation: none;
 }
 
-/* --- comment bubble entrance --- */
+/* comment bubble entrance */
 .comment-bubble {
   animation: commentSlideIn 0.3s ease both;
 }
 
-/* --- nav links pop in on load (staggered) --- */
+/* nav links pop in */
 .section-topnav .nav-links li:nth-child(1) a { animation: navLinkPop 0.4s ease both 0.05s; }
 .section-topnav .nav-links li:nth-child(2) a { animation: navLinkPop 0.4s ease both 0.15s; }
 .section-topnav .nav-links li:nth-child(3) a { animation: navLinkPop 0.4s ease both 0.25s; }
 .section-topnav .nav-links li:nth-child(4) a { animation: navLinkPop 0.4s ease both 0.35s; }
 
-/* --- mobile: prevent iOS auto-zoom on inputs (triggered when font-size < 16px) --- */
+/* stop iOS zoom on inputs */
 @media (max-width: 640px) {
   .msg-form input,
   .msg-form textarea {
@@ -1165,7 +1156,7 @@ body {
   }
 }
 
-/* --- Reduced motion: skip all decorative animations --- */
+/* reduced motion: kill the fluff */
 @media (prefers-reduced-motion: reduce) {
   .polaroid { transition: none; }
   .profile-overlay { transition: none; }

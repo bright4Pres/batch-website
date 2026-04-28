@@ -1,4 +1,4 @@
-  /* Game Carousel CSS */
+  /* carousel styles for the photo slider */
 
   body{
     font-family: 'Geist';
@@ -78,7 +78,7 @@
     z-index: 5;
   }
 
-  /* Title style */
+  /* little line title styling */
   .line-title {
     position: relative;
     width: 400px;
@@ -102,7 +102,7 @@
     background: #e73700;
   }
 
-  /* Responsive styles */
+  /* responsive tweaks for the slider */
   @media (min-width: 992px) and (max-width: 1199px) {
     .game-section {
       padding: 50px 30px;
