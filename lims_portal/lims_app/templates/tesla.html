@@ -8,90 +8,71 @@
   <link rel="stylesheet" href="https://public.codepenassets.com/css/normalize-5.0.0.min.css">
   <link rel="stylesheet" href="{% static 'Scripts/section.css' %}">
   <link rel="icon" href="{% static 'antuilanlogo.png' %}">
-<style>
-.polaroid.holo-card {
-  position: relative;
-  transform-style: preserve-3d;
-  transition: transform 0.12s ease;
-  will-change: transform;
-}
+  <style>
+  .polaroid.holo-card {
+    position: relative;
+    transform-style: preserve-3d;
+    isolation: isolate;
+    overflow: hidden;
+    will-change: transform;
+    transition: transform 0.12s ease;
 
-/* foil layer — color-dodge, always on */
-.holo-foil {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 2;
-  mix-blend-mode: color-dodge;
-  opacity: 0.22;
-  background:
-    repeating-linear-gradient(
-      -50deg,
-      transparent 0px,
-      transparent 3px,
-      rgba(140,110,200,0.06) 3px,
-      rgba(140,110,200,0.06) 4px
-    ),
-    linear-gradient(
-      135deg,
-      rgba(90,110,230,0.38) 0%,
-      rgba(170,80,190,0.28) 22%,
-      rgba(60,170,190,0.32) 44%,
-      rgba(190,160,80,0.20) 66%,
-      rgba(110,70,210,0.36) 88%,
-      rgba(80,130,220,0.38) 100%
+    /* css vars updated by JS on mousemove */
+    --lp: 50%; --tp: 50%;
+    --sx: 50%; --sy: 50%;
+    --p-opc: 0.18;
+    --ty: 0deg; --tx: 0deg;
+  }
+
+  /* layer 1 — iridescent gradient, color-dodge, tracks mouse */
+  .polaroid.holo-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image: repeating-linear-gradient(
+      0deg,
+      hsl(205, 55%, 52%) 0%,
+      hsl(245, 50%, 54%) 10%,
+      hsl(280, 50%, 54%) 20%,
+      hsl(320, 45%, 52%) 30%,
+      hsl(20,  45%, 54%) 40%,
+      hsl(55,  48%, 54%) 50%,
+      hsl(155, 50%, 50%) 60%,
+      hsl(185, 55%, 52%) 70%,
+      hsl(205, 55%, 52%) 80%
     );
-  animation: holo-drift 7s ease-in-out infinite alternate;
-  transition: opacity 0.35s;
-}
+    background-size: 100% 600%;
+    background-position: var(--lp) var(--tp);
+    mix-blend-mode: color-dodge;
+    opacity: 0.16;
+    animation: holo-bg-idle 6s ease-in-out infinite;
+    transition: opacity 0.25s;
+  }
 
-/* specular highlight — overlay, always on */
-.holo-spec {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: 3;
-  mix-blend-mode: overlay;
-  opacity: 0.13;
-  background: radial-gradient(
-    ellipse 55% 38% at 42% 32%,
-    rgba(255,255,255,0.80) 0%,
-    rgba(255,255,255,0.18) 40%,
-    transparent 70%
-  );
-  animation: holo-drift 7s ease-in-out infinite alternate;
-  transition: opacity 0.35s, background 0.08s;
-}
+  /* layer 2 — sparkles GIF, color-dodge, tracks mouse slower (parallax) */
+  .polaroid.holo-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    border-radius: inherit;
+    background-image: url('https://assets.codepen.io/13471/sparkles.gif');
+    background-size: 180px;
+    background-position: var(--sx) var(--sy);
+    mix-blend-mode: color-dodge;
+    opacity: var(--p-opc);
+    transition: opacity 0.2s;
+  }
 
-/* soft edge glow — always on */
-.holo-edge {
-  position: absolute;
-  inset: -2px;
-  border-radius: inherit;
-  pointer-events: none;
-  z-index: -1;
-  background: conic-gradient(
-    from 0deg,
-    rgba(90,70,200,0.22),
-    rgba(60,160,190,0.18),
-    rgba(170,70,160,0.20),
-    rgba(90,70,200,0.22)
-  );
-  filter: blur(4px);
-  opacity: 0.55;
-  animation: holo-edge-spin 9s linear infinite;
-}
-
-@keyframes holo-drift {
-  0%   { filter: hue-rotate(-18deg) brightness(0.95); opacity: 0.18; }
-  100% { filter: hue-rotate(18deg)  brightness(1.05); opacity: 0.30; }
-}
-@keyframes holo-edge-spin {
-  to { filter: blur(4px) hue-rotate(360deg); }
-}
-</style>
+  @keyframes holo-bg-idle {
+    0%, 100% { background-position: 50% 0%;   opacity: 0.13; }
+    50%       { background-position: 50% 100%; opacity: 0.20; }
+  }
+  </style>
 </head>
 <body class="section-tesla">
 
@@ -269,59 +250,45 @@
 
     card.classList.add('holo-card');
 
-    var foil = document.createElement('div');
-    foil.className = 'holo-foil';
-    card.appendChild(foil);
-
-    var spec = document.createElement('div');
-    spec.className = 'holo-spec';
-    card.appendChild(spec);
-
-    var edge = document.createElement('div');
-    edge.className = 'holo-edge';
-    card.appendChild(edge);
-
     card.addEventListener('mousemove', function (e) {
-      var r  = card.getBoundingClientRect();
-      var x  = (e.clientX - r.left) / r.width;   // 0–1
-      var y  = (e.clientY - r.top)  / r.height;   // 0–1
-      var rX = (y - 0.5) * -14;
-      var rY = (x - 0.5) *  14;
+      var l = e.offsetX;
+      var t = e.offsetY;
+      var w = card.offsetWidth;
+      var h = card.offsetHeight;
 
+      /* exact math from simeydotme */
+      var px   = Math.abs(Math.floor(100 / w * l) - 100);
+      var py   = Math.abs(Math.floor(100 / h * t) - 100);
+      var pa   = (50 - px) + (50 - py);
+      var lp   = 50 + (px - 50) / 1.5;
+      var tp   = 50 + (py - 50) / 1.5;
+      var sx   = 50 + (px - 50) / 7;    /* sparkle moves much slower */
+      var sy   = 50 + (py - 50) / 7;
+      var opc  = (20 + Math.abs(pa) * 1.5) / 100;  /* opacity by position */
+      var ty   = ((tp - 50) / 2) * -1;
+      var tx   = ((lp - 50) / 1.5) * 0.5;
+
+      card.style.setProperty('--lp',    lp  + '%');
+      card.style.setProperty('--tp',    tp  + '%');
+      card.style.setProperty('--sx',    sx  + '%');
+      card.style.setProperty('--sy',    sy  + '%');
+      card.style.setProperty('--p-opc', Math.min(opc, 0.65));
       card.style.transform =
-        'perspective(520px) rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) scale(1.04)';
+        'rotateX(' + ty + 'deg) rotateY(' + tx + 'deg) scale(1.04)';
 
-      /* shift foil gradient angle with cursor */
-      var deg = 110 + x * 60;
-      foil.style.background =
-        'repeating-linear-gradient(-50deg, transparent 0px, transparent 3px,' +
-        ' rgba(140,110,200,0.06) 3px, rgba(140,110,200,0.06) 4px),' +
-        'linear-gradient(' + deg + 'deg,' +
-        ' rgba(90,110,230,0.42) 0%,' +
-        ' rgba(170,80,190,0.30) 22%,' +
-        ' rgba(60,170,190,0.34) 44%,' +
-        ' rgba(190,160,80,0.22) 66%,' +
-        ' rgba(110,70,210,0.38) 88%,' +
-        ' rgba(80,130,220,0.42) 100%)';
-      foil.style.opacity   = '0.32';
-      foil.style.animation = 'none';
-
-      /* specular follows cursor */
-      spec.style.background =
-        'radial-gradient(ellipse 50% 35% at ' + (x * 100) + '% ' + (y * 100) + '%,' +
-        ' rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.14) 38%, transparent 68%)';
-      spec.style.opacity   = '0.22';
-      spec.style.animation = 'none';
+      /* kill idle animation while mouse is active */
+      card.style.setProperty('animation', 'none');
+      card.querySelector && null;
+      card.style.setProperty('--before-anim', 'none');
     });
 
     card.addEventListener('mouseleave', function () {
-      card.style.transform   = '';
-      foil.style.opacity     = '';
-      foil.style.background  = '';
-      foil.style.animation   = '';
-      spec.style.opacity     = '';
-      spec.style.background  = '';
-      spec.style.animation   = '';
+      card.style.transform = '';
+      card.style.setProperty('--lp',    '50%');
+      card.style.setProperty('--tp',    '50%');
+      card.style.setProperty('--sx',    '50%');
+      card.style.setProperty('--sy',    '50%');
+      card.style.setProperty('--p-opc', '0.18');
     });
   });
 }());
