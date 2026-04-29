@@ -333,19 +333,46 @@
     var spec    = document.createElement('div'); spec.className    = 'holo-spec';    card.appendChild(spec);
     var edge    = document.createElement('div'); edge.className    = 'holo-edge';    card.appendChild(edge);
 
-    card.addEventListener('mousemove', function (e) {
-      var r  = card.getBoundingClientRect();
-      var x  = (e.clientX - r.left) / r.width;
-      var y  = (e.clientY - r.top)  / r.height;
-      var rX = (y - 0.5) * -22;
-      var rY = (x - 0.5) *  22;
+    /* lerp state */
+    var tiltX = 0, tiltY = 0;
+    var targetX = 0, targetY = 0;
+    var curX = 0.5, curY = 0.5;
+    var isHovered = false;
+    var raf;
 
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    function tick() {
+      tiltX = lerp(tiltX, targetX, 0.10);
+      tiltY = lerp(tiltY, targetY, 0.10);
+
+      var scale = isHovered ? 1.06 : 1.0;
       card.style.transform =
-        'perspective(480px) rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) scale(1.06)';
+        'perspective(520px)' +
+        ' rotateX(' + tiltX + 'deg)' +
+        ' rotateY(' + tiltY + 'deg)' +
+        ' scale(' + scale + ')';
 
-      /* foil gradient angle + hue shift follows cursor */
-      var deg = 80 + x * 100;
-      var hue = Math.round(x * 60 - 30);
+      /* keep updating until essentially flat */
+      if (Math.abs(tiltX) > 0.05 || Math.abs(tiltY) > 0.05 || isHovered) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        tiltX = 0; tiltY = 0;
+        card.style.transform = '';
+      }
+    }
+
+    card.addEventListener('mousemove', function (e) {
+      var r = card.getBoundingClientRect();
+      curX  = (e.clientX - r.left) / r.width;
+      curY  = (e.clientY - r.top)  / r.height;
+
+      targetX = (curY - 0.5) * -26;
+      targetY = (curX - 0.5) *  26;
+
+      /* foil follows cursor angle */
+      var deg = 80 + curX * 100;
+      var hue = Math.round(curX * 60 - 30);
       foil.style.background =
         'repeating-linear-gradient(-45deg, transparent 0px, transparent 2px, rgba(200,160,255,0.12) 2px, rgba(200,160,255,0.12) 3px),' +
         'repeating-linear-gradient(45deg, transparent 0px, transparent 2px, rgba(160,220,255,0.09) 2px, rgba(160,220,255,0.09) 3px),' +
@@ -361,9 +388,9 @@
       foil.style.opacity   = '0.70';
       foil.style.animation = 'none';
 
-      /* specular hotspot moves exactly with cursor */
+      /* specular follows cursor */
       spec.style.background =
-        'radial-gradient(ellipse 65% 45% at ' + (x * 100) + '% ' + (y * 100) + '%,' +
+        'radial-gradient(ellipse 65% 45% at ' + (curX * 100) + '% ' + (curY * 100) + '%,' +
         ' rgba(255,255,255,0.95) 0%,' +
         ' rgba(210,190,255,0.55) 25%,' +
         ' rgba(130,210,255,0.25) 50%,' +
@@ -371,19 +398,29 @@
       spec.style.opacity   = '0.45';
       spec.style.animation = 'none';
 
-      /* sparkle intensity up on hover */
       sparkle.style.opacity   = '0.90';
       sparkle.style.animation = 'none';
     });
 
+    card.addEventListener('mouseenter', function () {
+      isHovered = true;
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(tick);
+    });
+
     card.addEventListener('mouseleave', function () {
-      card.style.transform   = '';
-      foil.style.cssText     = '';
-      foil.className         = 'holo-foil';
-      spec.style.cssText     = '';
-      spec.className         = 'holo-spec';
-      sparkle.style.cssText  = '';
-      sparkle.className      = 'holo-sparkle';
+      isHovered = false;
+      targetX = 0;
+      targetY = 0;
+
+      /* reset foil/spec back to CSS animation */
+      foil.style.cssText    = ''; foil.className    = 'holo-foil';
+      spec.style.cssText    = ''; spec.className    = 'holo-spec';
+      sparkle.style.cssText = ''; sparkle.className = 'holo-sparkle';
+
+      /* keep ticking so it eases back to flat */
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(tick);
     });
   });
 }());
