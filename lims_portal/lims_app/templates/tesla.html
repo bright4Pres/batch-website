@@ -77,6 +77,104 @@
 <!-- grid of scholar cards -->
   <div class="card-grid">
   {% for s in scholar %}
+  {% if s.name|lower == "bastasa, bright ramos" %}
+  <div class="polaroid holo-card"
+       data-name="{{ s.name|escape }}"
+       data-desc="{{ s.description|default:'-'|escape }}"
+       data-img="{% if s.image %}{{ s.image.url }}{% else %}{% static 'batcher.jpg' %}{% endif %}"
+       data-memory="{{ s.favorite_memory|default:'-'|escape }}"
+       data-plans="{{ s.future_plans|default:'-'|escape }}"
+       data-likes="{{ s.likes|default:'-'|escape }}"
+       data-dislikes="{{ s.dislikes|default:'-'|escape }}"
+       data-mbti="{{ s.mbti|default:'-'|escape }}"
+       data-url="{% url 'scholar_detail' s.pk %}"
+       onclick="openProfileFromCard(this)">
+    <div class="holo-book-wrap">
+      <div class="holo-book">
+        <div class="bk-book bk-bookdefault">
+          <div class="bk-front">
+            <div class="bk-cover">
+              <img class="bk-cover-photo" src="{% if s.image %}{{ s.image.url }}{% else %}{% static 'batcher.jpg' %}{% endif %}" alt="{{ s.name }} cover" loading="lazy">
+              <div class="color-container hidden before clearfix">
+                <div class="color-square background-color-ED5565"></div>
+                <div class="color-square background-color-DA4453"></div>
+                <div class="color-square background-color-FC6E51"></div>
+                <div class="color-square background-color-E9573F"></div>
+                <div class="color-square background-color-FFCE54"></div>
+                <div class="color-square background-color-FCBB42"></div>
+                <div class="color-square background-color-A0D468"></div>
+                <div class="color-square background-color-8CC152"></div>
+                <div class="color-square background-color-48CFAD"></div>
+                <div class="color-square background-color-37BC9B"></div>
+              </div>
+              <div class="bk-title">
+                <div>
+                  <h2 class="highlight before">Tesla</h2>
+                  <h1><span class="highlight">{{ s.name|title }}</span></h1>
+                  <h2>Batch 2026</h2>
+                </div>
+              </div>
+              <h3>
+                <a href="#" class="change-color highlight">Change Color</a> |
+                <a href="#" class="highlight bk-bookview">Open me</a> |
+                <a href="#" class="highlight bk-bookback">Check my back</a>
+              </h3>
+              <div class="color-container hidden clearfix">
+                <div class="color-square background-color-4FC1E9"></div>
+                <div class="color-square background-color-3BAFDA"></div>
+                <div class="color-square background-color-5D9CEC"></div>
+                <div class="color-square background-color-4A89DC"></div>
+                <div class="color-square background-color-AC92EC"></div>
+                <div class="color-square background-color-967ADC"></div>
+                <div class="color-square background-color-EC87C0"></div>
+                <div class="color-square background-color-D770AD"></div>
+                <div class="color-square background-color-AAB2BD"></div>
+                <div class="color-square background-color-656D78"></div>
+              </div>
+            </div>
+            <div class="bk-cover-back"></div>
+          </div>
+          <div class="bk-page">
+            <div class="bb-bookblock">
+              <div class="bb-item clearfix">
+                <div class="color-square background-color-ED5565"><span>1</span></div>
+                <div class="color-square background-color-DA4453"><span>2</span></div>
+              </div>
+              <div class="bb-item clearfix">
+                <div class="color-square background-color-FC6E51"><span>3</span></div>
+                <div class="color-square background-color-E9573F"><span>4</span></div>
+              </div>
+              <div class="bb-item clearfix">
+                <div class="color-square background-color-FFCE54"><span>5</span></div>
+                <div class="color-square background-color-FCBB42"><span>6</span></div>
+              </div>
+              <div class="bb-item clearfix">
+                <div class="color-square background-color-A0D468"><span>7</span></div>
+                <div class="color-square background-color-8CC152"><span>8</span></div>
+              </div>
+              <div class="bb-item clearfix">
+                <div class="color-square background-color-48CFAD"><span>9</span></div>
+                <div class="color-square background-color-37BC9B"><span>10</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="bk-back bk-bookback">
+            <div class="wrapper-table">
+              <div class="bk-back-inner">
+                <h1 class="highlight">2026</h1>
+                <p>{{ s.description|default:'-'|truncatewords:18 }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="bk-right"></div>
+          <div class="bk-left"></div>
+          <div class="bk-top"></div>
+          <div class="bk-bottom"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% else %}
   <div class="polaroid"
        data-name="{{ s.name|escape }}"
        data-desc="{{ s.description|default:'-'|escape }}"
@@ -94,6 +192,7 @@
       <p>{{ s.description|truncatewords:12 }}</p>
     </div>
   </div>
+  {% endif %}
   {% empty %}
   <p style="grid-column:1/-1;text-align:center;color:var(--ink-light);font-style:italic;padding:40px 0;">
     No scholars posted here yet &mdash; check back soon!
