@@ -405,8 +405,8 @@
       for (var r = 0; r < rows - 1; r++) {
         for (var c = 0; c < cols; c++) {
           var below  = buf[(r + 1) * cols + c];
-          var decay  = (Math.random() * 3) | 0;       /* 0-2  */
-          var spread = ((Math.random() * 3) | 0) - 1; /* -1 0 +1 */
+          var decay  = ((Math.random() * 4) | 0) + 1;       /* 0-2  */
+          var spread = ((Math.random() * 5) | 0) - 2; // -2, -1, 0, 1, 2
           var tc     = Math.max(0, Math.min(cols - 1, c + spread));
           buf[r * cols + tc] = Math.min(MAX, below + decay);
         }
