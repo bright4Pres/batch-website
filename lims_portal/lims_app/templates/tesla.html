@@ -9,6 +9,26 @@
   <link rel="stylesheet" href="{% static 'Scripts/section.css' %}">
   <link rel="icon" href="{% static 'antuilanlogo.png' %}">
   <style>
+  .bastasa-fire {
+    position: absolute;
+    left: 0;
+    top: -80px;
+    width: 100%;
+    height: 80px;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .bastasa-pixel-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+  
   .polaroid.holo-card {
     position: relative;
     transform-style: preserve-3d;
@@ -315,6 +335,163 @@
   made with my blood sweat and TEARS &hearts; &mdash;
   <a href="{% url 'home' %}">back to home</a>
 </footer>
+<script>
+(function () {
+  var DPR   = window.devicePixelRatio || 1;
+  var CELL  = Math.round(6 * DPR);   /* fire pixel block (px on canvas) */
+  var DEPTH = 36;                    /* colour steps                     */
+  var FIRE_H = 80;                   /* canvas height in CSS px          */
+  var BLOCK  = 9;                    /* pixel-art block size for photo   */
+
+  /* ── fire colour ramp: index 0 = hottest, MAX = transparent ── */
+  var STOPS = [
+    [0,    'rgba(255,255,180,1)'],
+    [0.12, 'rgba(255,210,0,1)'  ],
+    [0.28, 'rgba(255,120,0,1)'  ],
+    [0.45, 'rgba(220,30,10,0.95)'],
+    [0.62, 'rgba(140,0,60,0.80)'],
+    [0.78, 'rgba(60,0,90,0.50)' ],
+    [0.90, 'rgba(20,0,40,0.22)' ],
+    [1,    'rgba(0,0,0,0)'      ]
+  ];
+
+  function makeColors(n, stops) {
+    var c = document.createElement('canvas');
+    c.width = n; c.height = 1;
+    var ctx = c.getContext('2d');
+    var g   = ctx.createLinearGradient(0, 0, n, 0);
+    stops.forEach(function (s) { g.addColorStop(s[0], s[1]); });
+    ctx.fillStyle = g; ctx.fillRect(0, 0, n, 1);
+    var out = [];
+    for (var x = 0; x < n; x++) {
+      var d = ctx.getImageData(x, 0, 1, 1).data;
+      out.push([d[0], d[1], d[2], d[3]]);
+    }
+    return out;
+  }
+
+  var COLORS = makeColors(DEPTH, STOPS);
+  var MAX    = DEPTH - 1;
+
+  /* ────────────────────────────────────────────
+     BITFIRE — runs continuously above the card
+  ──────────────────────────────────────────── */
+  function addFire(card) {
+    card.style.overflow = 'visible';
+    card.style.position = 'relative';
+
+    var fc = document.createElement('canvas');
+    fc.className = 'bastasa-fire';
+    card.appendChild(fc);
+
+    var cols, rows, buf;
+
+    function resize() {
+      var w = card.offsetWidth || 160;
+      fc.width  = Math.round(w * DPR);
+      fc.height = Math.round(FIRE_H * DPR);
+      fc.style.width  = w + 'px';
+      fc.style.height = FIRE_H + 'px';
+      cols = Math.ceil(fc.width  / CELL);
+      rows = Math.ceil(fc.height / CELL);
+      buf  = new Uint8Array(rows * cols).fill(MAX);
+      for (var c = 0; c < cols; c++) buf[(rows - 1) * cols + c] = 0;
+    }
+
+    function step() {
+      /* lock bottom row at max heat */
+      for (var c = 0; c < cols; c++) buf[(rows - 1) * cols + c] = 0;
+
+      for (var r = 0; r < rows - 1; r++) {
+        for (var c = 0; c < cols; c++) {
+          var below  = buf[(r + 1) * cols + c];
+          var decay  = (Math.random() * 3) | 0;       /* 0-2  */
+          var spread = ((Math.random() * 3) | 0) - 1; /* -1 0 +1 */
+          var tc     = Math.max(0, Math.min(cols - 1, c + spread));
+          buf[r * cols + tc] = Math.min(MAX, below + decay);
+        }
+      }
+    }
+
+    function draw() {
+      var ctx = fc.getContext('2d');
+      ctx.clearRect(0, 0, fc.width, fc.height);
+      for (var r = 0; r < rows; r++) {
+        for (var c = 0; c < cols; c++) {
+          var idx   = buf[r * cols + c];
+          var color = COLORS[idx];
+          if (color[3] < 4) continue;
+          ctx.fillStyle =
+            'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ',' +
+            (color[3] / 255).toFixed(2) + ')';
+          ctx.fillRect(c * CELL, r * CELL, CELL, CELL);
+        }
+      }
+    }
+
+    function loop() { step(); draw(); requestAnimationFrame(loop); }
+
+    setTimeout(function () { resize(); loop(); }, 80);
+    window.addEventListener('resize', resize);
+  }
+
+  /* ────────────────────────────────────────────
+     PIXEL OVERLAY — pixelates the photo always
+  ──────────────────────────────────────────── */
+  function addPixelOverlay(card) {
+    var img = card.querySelector('.polaroid-img');
+    if (!img) return;
+
+    var ov = document.createElement('canvas');
+    ov.className = 'bastasa-pixel-overlay';
+    card.insertBefore(ov, card.firstChild);
+
+    function render() {
+      var iR = img.getBoundingClientRect();
+      var cR = card.getBoundingClientRect();
+      var W  = Math.round(iR.width);
+      var H  = Math.round(iR.height);
+      if (!W || !H || !img.naturalWidth) { setTimeout(render, 150); return; }
+
+      /* shrink to tiny canvas → scale back up with no smoothing = pixel art */
+      var sw = Math.max(1, Math.round(W / BLOCK));
+      var sh = Math.max(1, Math.round(H / BLOCK));
+
+      var off = document.createElement('canvas');
+      off.width = sw; off.height = sh;
+      var octx = off.getContext('2d');
+      octx.imageSmoothingEnabled = false;
+      octx.drawImage(img, 0, 0, sw, sh);
+
+      /* canvas internal res = tiny; CSS size = full → browser pixelates */
+      ov.width  = sw;
+      ov.height = sh;
+      ov.style.width  = W + 'px';
+      ov.style.height = H + 'px';
+      ov.style.top    = Math.round(iR.top  - cR.top)  + 'px';
+      ov.style.left   = Math.round(iR.left - cR.left) + 'px';
+
+      var ctx = ov.getContext('2d');
+      ctx.imageSmoothingEnabled = false;
+      ctx.drawImage(off, 0, 0, sw, sh, 0, 0, sw, sh);
+    }
+
+    if (img.complete && img.naturalWidth) {
+      setTimeout(render, 80);
+    } else {
+      img.addEventListener('load', function () { setTimeout(render, 80); });
+    }
+  }
+
+  /* ── wire up to Bastasa's card only ── */
+  document.querySelectorAll('.polaroid').forEach(function (card) {
+    var n = (card.dataset.name || '').toLowerCase();
+    if (n.indexOf('bastasa') === -1 && n.indexOf('bright') === -1) return;
+    addFire(card);
+    addPixelOverlay(card);
+  });
+}());
+</script>
 <script>
 (function () {
   /* ── polaroid card holo ── */
