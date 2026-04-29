@@ -438,50 +438,6 @@
   /* ────────────────────────────────────────────
      PIXEL OVERLAY — pixelates the photo always
   ──────────────────────────────────────────── */
-  function addPixelOverlay(card) {
-    var img = card.querySelector('.polaroid-img');
-    if (!img) return;
-
-    var ov = document.createElement('canvas');
-    ov.className = 'bastasa-pixel-overlay';
-    card.insertBefore(ov, card.firstChild);
-
-    function render() {
-      var iR = img.getBoundingClientRect();
-      var cR = card.getBoundingClientRect();
-      var W  = Math.round(iR.width);
-      var H  = Math.round(iR.height);
-      if (!W || !H || !img.naturalWidth) { setTimeout(render, 150); return; }
-
-      /* shrink to tiny canvas → scale back up with no smoothing = pixel art */
-      var sw = Math.max(1, Math.round(W / BLOCK));
-      var sh = Math.max(1, Math.round(H / BLOCK));
-
-      var off = document.createElement('canvas');
-      off.width = sw; off.height = sh;
-      var octx = off.getContext('2d');
-      octx.imageSmoothingEnabled = false;
-      octx.drawImage(img, 0, 0, sw, sh);
-
-      /* canvas internal res = tiny; CSS size = full → browser pixelates */
-      ov.width  = sw;
-      ov.height = sh;
-      ov.style.width  = W + 'px';
-      ov.style.height = H + 'px';
-      ov.style.top    = Math.round(iR.top  - cR.top)  + 'px';
-      ov.style.left   = Math.round(iR.left - cR.left) + 'px';
-
-      var ctx = ov.getContext('2d');
-      ctx.imageSmoothingEnabled = false;
-      ctx.drawImage(off, 0, 0, sw, sh, 0, 0, sw, sh);
-    }
-
-    if (img.complete && img.naturalWidth) {
-      setTimeout(render, 80);
-    } else {
-      img.addEventListener('load', function () { setTimeout(render, 80); });
-    }
-  }
 
   /* ── wire up to Bastasa's card only ── */
   document.querySelectorAll('.polaroid').forEach(function (card) {
