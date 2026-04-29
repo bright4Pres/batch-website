@@ -12,86 +12,84 @@
 .polaroid.holo-card {
   position: relative;
   transform-style: preserve-3d;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition: transform 0.12s ease;
   will-change: transform;
 }
-.polaroid.holo-card::before {
-  content: '';
+
+/* foil layer — color-dodge, always on */
+.holo-foil {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(
-    135deg,
-    rgba(255,0,128,0.28) 0%,
-    rgba(255,165,0,0.28) 15%,
-    rgba(255,255,0,0.28) 30%,
-    rgba(0,255,128,0.28) 45%,
-    rgba(0,200,255,0.28) 60%,
-    rgba(128,0,255,0.28) 75%,
-    rgba(255,0,200,0.28) 90%,
-    rgba(255,0,128,0.28) 100%
-  );
-  mix-blend-mode: color-dodge;
-  opacity: 0;
-  transition: opacity 0.3s;
-  z-index: 2;
   pointer-events: none;
+  z-index: 2;
+  mix-blend-mode: color-dodge;
+  opacity: 0.22;
+  background:
+    repeating-linear-gradient(
+      -50deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(140,110,200,0.06) 3px,
+      rgba(140,110,200,0.06) 4px
+    ),
+    linear-gradient(
+      135deg,
+      rgba(90,110,230,0.38) 0%,
+      rgba(170,80,190,0.28) 22%,
+      rgba(60,170,190,0.32) 44%,
+      rgba(190,160,80,0.20) 66%,
+      rgba(110,70,210,0.36) 88%,
+      rgba(80,130,220,0.38) 100%
+    );
+  animation: holo-drift 7s ease-in-out infinite alternate;
+  transition: opacity 0.35s;
 }
-.polaroid.holo-card::after {
-  content: '';
+
+/* specular highlight — overlay, always on */
+.holo-spec {
   position: absolute;
-  inset: -3px;
-  border-radius: calc(inherit + 4px);
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: overlay;
+  opacity: 0.13;
+  background: radial-gradient(
+    ellipse 55% 38% at 42% 32%,
+    rgba(255,255,255,0.80) 0%,
+    rgba(255,255,255,0.18) 40%,
+    transparent 70%
+  );
+  animation: holo-drift 7s ease-in-out infinite alternate;
+  transition: opacity 0.35s, background 0.08s;
+}
+
+/* soft edge glow — always on */
+.holo-edge {
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: -1;
   background: conic-gradient(
     from 0deg,
-    #ff0080, #ff8c00, #ffe000,
-    #40e0d0, #0080ff, #8000ff, #ff0080
+    rgba(90,70,200,0.22),
+    rgba(60,160,190,0.18),
+    rgba(170,70,160,0.20),
+    rgba(90,70,200,0.22)
   );
   filter: blur(4px);
-  opacity: 0;
-  z-index: -1;
-  transition: opacity 0.3s;
-  pointer-events: none;
-  animation: holo-ring-spin 3s linear infinite;
+  opacity: 0.55;
+  animation: holo-edge-spin 9s linear infinite;
 }
-.polaroid.holo-card:hover::before { opacity: 1; }
-.polaroid.holo-card:hover::after  { opacity: 0.75; }
-.polaroid.holo-card:hover { box-shadow: 0 0 24px 4px rgba(160,80,255,0.35); }
-.holo-sheen {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.55) 0%, transparent 65%);
-  mix-blend-mode: overlay;
-  z-index: 3;
-  transition: opacity 0.2s;
+
+@keyframes holo-drift {
+  0%   { filter: hue-rotate(-18deg) brightness(0.95); opacity: 0.18; }
+  100% { filter: hue-rotate(18deg)  brightness(1.05); opacity: 0.30; }
 }
-.polaroid.holo-card:hover .holo-sheen { opacity: 1; }
-.holo-badge {
-  position: absolute;
-  top: -10px;
-  right: -10px;
-  background: linear-gradient(135deg, #ffd700, #ff6b6b, #4ecdc4);
-  color: #fff;
-  font-size: 9px;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 20px;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-  animation: holo-badge-pulse 2s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes holo-ring-spin {
+@keyframes holo-edge-spin {
   to { filter: blur(4px) hue-rotate(360deg); }
-}
-@keyframes holo-badge-pulse {
-  0%, 100% { transform: scale(1); }
-  50%       { transform: scale(1.1); }
 }
 </style>
 </head>
@@ -263,40 +261,67 @@
   made with my blood sweat and TEARS &hearts; &mdash;
   <a href="{% url 'home' %}">back to home</a>
 </footer>
-
-
 <script>
 (function () {
-  var cards = document.querySelectorAll('.polaroid');
-  cards.forEach(function (card) {
+  document.querySelectorAll('.polaroid').forEach(function (card) {
     var name = (card.dataset.name || '').toLowerCase();
     if (name.indexOf('bastasa') === -1 && name.indexOf('bright') === -1) return;
 
-    /* mark it */
     card.classList.add('holo-card');
 
-    /* add sheen layer */
-    var sheen = document.createElement('div');
-    sheen.className = 'holo-sheen';
-    card.appendChild(sheen);
+    var foil = document.createElement('div');
+    foil.className = 'holo-foil';
+    card.appendChild(foil);
 
-    /* tilt + sheen on mouse move */
+    var spec = document.createElement('div');
+    spec.className = 'holo-spec';
+    card.appendChild(spec);
+
+    var edge = document.createElement('div');
+    edge.className = 'holo-edge';
+    card.appendChild(edge);
+
     card.addEventListener('mousemove', function (e) {
-      var r   = card.getBoundingClientRect();
-      var x   = (e.clientX - r.left)  / r.width;
-      var y   = (e.clientY - r.top)   / r.height;
-      var rX  = (y - 0.5) * -16;
-      var rY  = (x - 0.5) * 16;
-      card.style.transform = 'perspective(500px) rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) scale(1.05)';
-      var deg = Math.round(x * 360);
-      card.style.setProperty('--holo-deg', deg + 'deg');
-      sheen.style.background =
-        'radial-gradient(circle at ' + (x * 100) + '% ' + (y * 100) + '%, ' +
-        'rgba(255,255,255,0.55) 0%, transparent 60%)';
+      var r  = card.getBoundingClientRect();
+      var x  = (e.clientX - r.left) / r.width;   // 0–1
+      var y  = (e.clientY - r.top)  / r.height;   // 0–1
+      var rX = (y - 0.5) * -14;
+      var rY = (x - 0.5) *  14;
+
+      card.style.transform =
+        'perspective(520px) rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) scale(1.04)';
+
+      /* shift foil gradient angle with cursor */
+      var deg = 110 + x * 60;
+      foil.style.background =
+        'repeating-linear-gradient(-50deg, transparent 0px, transparent 3px,' +
+        ' rgba(140,110,200,0.06) 3px, rgba(140,110,200,0.06) 4px),' +
+        'linear-gradient(' + deg + 'deg,' +
+        ' rgba(90,110,230,0.42) 0%,' +
+        ' rgba(170,80,190,0.30) 22%,' +
+        ' rgba(60,170,190,0.34) 44%,' +
+        ' rgba(190,160,80,0.22) 66%,' +
+        ' rgba(110,70,210,0.38) 88%,' +
+        ' rgba(80,130,220,0.42) 100%)';
+      foil.style.opacity   = '0.32';
+      foil.style.animation = 'none';
+
+      /* specular follows cursor */
+      spec.style.background =
+        'radial-gradient(ellipse 50% 35% at ' + (x * 100) + '% ' + (y * 100) + '%,' +
+        ' rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.14) 38%, transparent 68%)';
+      spec.style.opacity   = '0.22';
+      spec.style.animation = 'none';
     });
 
     card.addEventListener('mouseleave', function () {
-      card.style.transform = '';
+      card.style.transform   = '';
+      foil.style.opacity     = '';
+      foil.style.background  = '';
+      foil.style.animation   = '';
+      spec.style.opacity     = '';
+      spec.style.background  = '';
+      spec.style.animation   = '';
     });
   });
 }());
