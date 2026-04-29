@@ -705,13 +705,13 @@
     var SPEED = 0.009; /* radians per frame ~0.5 rpm at 60fps */
 
     function tick() {
-      var cw = karla.offsetWidth  || 160;
-      var ch = karla.offsetHeight || 220;
+      var cw = karla.offsetWidth  || 120;
+      var ch = karla.offsetHeight || 180;
 
       /* orbit ellipse extends just past the card edges */
       var rx = cw * 0.5 + 70;
       var ry = ch * 0.5 + 60;
-      var cx = cw * 5;
+      var cx = cw * 0.5;
       var cy = ch * 0.5;
 
       /* point on the ellipse */
