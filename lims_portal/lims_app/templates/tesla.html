@@ -280,12 +280,6 @@
     sheen.className = 'holo-sheen';
     card.appendChild(sheen);
 
-    /* add ✦ Holo badge */
-    var badge = document.createElement('div');
-    badge.className = 'holo-badge';
-    badge.textContent = '✦ Holo';
-    card.appendChild(badge);
-
     /* tilt + sheen on mouse move */
     card.addEventListener('mousemove', function (e) {
       var r   = card.getBoundingClientRect();
