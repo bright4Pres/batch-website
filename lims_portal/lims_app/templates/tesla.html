@@ -12,65 +12,143 @@
   .polaroid.holo-card {
     position: relative;
     transform-style: preserve-3d;
-    isolation: isolate;
-    overflow: hidden;
+    transition: transform 0.10s ease;
     will-change: transform;
-    transition: transform 0.12s ease;
-
-    /* css vars updated by JS on mousemove */
-    --lp: 50%; --tp: 50%;
-    --sx: 50%; --sy: 50%;
-    --p-opc: 0.18;
-    --ty: 0deg; --tx: 0deg;
+    overflow: visible !important;
   }
 
-  /* layer 1 — iridescent gradient, color-dodge, tracks mouse */
-  .polaroid.holo-card::before {
-    content: '';
+  /* base foil — color-dodge, always burning through */
+  .holo-foil {
     position: absolute;
     inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
     z-index: 2;
-    pointer-events: none;
-    border-radius: inherit;
-    background-image: repeating-linear-gradient(
-      0deg,
-      hsl(205, 55%, 52%) 0%,
-      hsl(245, 50%, 54%) 10%,
-      hsl(280, 50%, 54%) 20%,
-      hsl(320, 45%, 52%) 30%,
-      hsl(20,  45%, 54%) 40%,
-      hsl(55,  48%, 54%) 50%,
-      hsl(155, 50%, 50%) 60%,
-      hsl(185, 55%, 52%) 70%,
-      hsl(205, 55%, 52%) 80%
-    );
-    background-size: 100% 600%;
-    background-position: var(--lp) var(--tp);
     mix-blend-mode: color-dodge;
-    opacity: 0.16;
-    animation: holo-bg-idle 6s ease-in-out infinite;
-    transition: opacity 0.25s;
+    opacity: 0.55;
+    background:
+      repeating-linear-gradient(
+        -45deg,
+        transparent            0px,
+        transparent            2px,
+        rgba(200,160,255,0.09) 2px,
+        rgba(200,160,255,0.09) 3px
+      ),
+      repeating-linear-gradient(
+        45deg,
+        transparent            0px,
+        transparent            2px,
+        rgba(160,220,255,0.07) 2px,
+        rgba(160,220,255,0.07) 3px
+      ),
+      linear-gradient(
+        135deg,
+        rgba(100,80,255,0.60)  0%,
+        rgba(200,60,220,0.50)  18%,
+        rgba(60,180,255,0.55)  36%,
+        rgba(80,240,180,0.45)  52%,
+        rgba(255,180,60,0.42)  68%,
+        rgba(220,60,160,0.55)  84%,
+        rgba(100,80,255,0.60)  100%
+      );
+    animation: holo-drift 5s ease-in-out infinite alternate;
   }
 
-  /* layer 2 — sparkles GIF, color-dodge, tracks mouse slower (parallax) */
-  .polaroid.holo-card::after {
-    content: '';
+  /* glitter sparkle layer */
+  .holo-sparkle {
     position: absolute;
     inset: 0;
-    z-index: 3;
-    pointer-events: none;
     border-radius: inherit;
-    background-image: url('https://assets.codepen.io/13471/sparkles.gif');
-    background-size: 180px;
-    background-position: var(--sx) var(--sy);
-    mix-blend-mode: color-dodge;
-    opacity: var(--p-opc);
-    transition: opacity 0.2s;
+    pointer-events: none;
+    z-index: 4;
+    mix-blend-mode: screen;
+    opacity: 0;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.95) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.80) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.70) 1px, transparent 1px),
+      radial-gradient(circle, rgba(200,180,255,0.90) 1px, transparent 1px),
+      radial-gradient(circle, rgba(180,240,255,0.85) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,220,180,0.80) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.95) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.70) 1px, transparent 1px),
+      radial-gradient(circle, rgba(200,255,200,0.85) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,180,255,0.80) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.90) 1px, transparent 1px),
+      radial-gradient(circle, rgba(180,200,255,0.85) 1px, transparent 1px);
+    background-size:
+      180px 180px, 140px 140px, 200px 200px,
+      160px 160px, 120px 120px, 190px 190px,
+      150px 150px, 170px 170px, 130px 130px,
+      185px 185px, 145px 145px, 165px 165px;
+    background-position:
+      12px 18px,  55px 70px,  90px 25px,
+      30px 100px, 75px 45px,  110px 80px,
+      20px 55px,  65px 10px,  100px 60px,
+      40px 90px,  80px 30px,  15px 75px;
+    animation: sparkle-fade 5s ease-in-out infinite alternate;
   }
 
-  @keyframes holo-bg-idle {
-    0%, 100% { background-position: 50% 0%;   opacity: 0.13; }
-    50%       { background-position: 50% 100%; opacity: 0.20; }
+  /* big specular sweep — screen blend */
+  .holo-spec {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 3;
+    mix-blend-mode: screen;
+    opacity: 0.30;
+    background: radial-gradient(
+      ellipse 70% 50% at 40% 30%,
+      rgba(255,255,255,0.90) 0%,
+      rgba(200,180,255,0.40) 30%,
+      rgba(120,200,255,0.20) 55%,
+      transparent 75%
+    );
+    animation: holo-drift 5s ease-in-out infinite alternate;
+    transition: opacity 0.1s, background 0.06s;
+  }
+
+  /* rainbow edge glow */
+  .holo-edge {
+    position: absolute;
+    inset: -3px;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: -1;
+    background: conic-gradient(
+      from 0deg,
+      rgba(100,80,255,0.55),
+      rgba(60,180,255,0.50),
+      rgba(80,240,180,0.45),
+      rgba(255,200,60,0.50),
+      rgba(220,60,160,0.55),
+      rgba(100,80,255,0.55)
+    );
+    filter: blur(5px);
+    opacity: 0.80;
+    animation: holo-edge-spin 6s linear infinite;
+  }
+
+  @keyframes holo-drift {
+    0%   { filter: hue-rotate(-30deg) brightness(0.90) saturate(1.1); }
+    100% { filter: hue-rotate(30deg)  brightness(1.20) saturate(1.5); }
+  }
+  @keyframes sparkle-fade {
+    0%   { opacity: 0.55; background-position:
+      12px 18px,  55px 70px,  90px 25px,
+      30px 100px, 75px 45px,  110px 80px,
+      20px 55px,  65px 10px,  100px 60px,
+      40px 90px,  80px 30px,  15px 75px; }
+    50%  { opacity: 0.85; }
+    100% { opacity: 0.60; background-position:
+      22px 28px,  65px 80px,  80px 35px,
+      40px 90px,  85px 55px,  100px 70px,
+      30px 45px,  75px 20px,  90px 70px,
+      50px 80px,  90px 40px,  25px 85px; }
+  }
+  @keyframes holo-edge-spin {
+    to { filter: blur(5px) hue-rotate(360deg); }
   }
   </style>
 </head>
@@ -250,45 +328,62 @@
 
     card.classList.add('holo-card');
 
+    var foil    = document.createElement('div'); foil.className    = 'holo-foil';    card.appendChild(foil);
+    var sparkle = document.createElement('div'); sparkle.className = 'holo-sparkle'; card.appendChild(sparkle);
+    var spec    = document.createElement('div'); spec.className    = 'holo-spec';    card.appendChild(spec);
+    var edge    = document.createElement('div'); edge.className    = 'holo-edge';    card.appendChild(edge);
+
     card.addEventListener('mousemove', function (e) {
-      var l = e.offsetX;
-      var t = e.offsetY;
-      var w = card.offsetWidth;
-      var h = card.offsetHeight;
+      var r  = card.getBoundingClientRect();
+      var x  = (e.clientX - r.left) / r.width;
+      var y  = (e.clientY - r.top)  / r.height;
+      var rX = (y - 0.5) * -22;
+      var rY = (x - 0.5) *  22;
 
-      /* exact math from simeydotme */
-      var px   = Math.abs(Math.floor(100 / w * l) - 100);
-      var py   = Math.abs(Math.floor(100 / h * t) - 100);
-      var pa   = (50 - px) + (50 - py);
-      var lp   = 50 + (px - 50) / 1.5;
-      var tp   = 50 + (py - 50) / 1.5;
-      var sx   = 50 + (px - 50) / 7;    /* sparkle moves much slower */
-      var sy   = 50 + (py - 50) / 7;
-      var opc  = (20 + Math.abs(pa) * 1.5) / 100;  /* opacity by position */
-      var ty   = ((tp - 50) / 2) * -1;
-      var tx   = ((lp - 50) / 1.5) * 0.5;
-
-      card.style.setProperty('--lp',    lp  + '%');
-      card.style.setProperty('--tp',    tp  + '%');
-      card.style.setProperty('--sx',    sx  + '%');
-      card.style.setProperty('--sy',    sy  + '%');
-      card.style.setProperty('--p-opc', Math.min(opc, 0.65));
       card.style.transform =
-        'rotateX(' + ty + 'deg) rotateY(' + tx + 'deg) scale(1.04)';
+        'perspective(480px) rotateX(' + rX + 'deg) rotateY(' + rY + 'deg) scale(1.06)';
 
-      /* kill idle animation while mouse is active */
-      card.style.setProperty('animation', 'none');
-      card.querySelector && null;
-      card.style.setProperty('--before-anim', 'none');
+      /* foil gradient angle + hue shift follows cursor */
+      var deg = 80 + x * 100;
+      var hue = Math.round(x * 60 - 30);
+      foil.style.background =
+        'repeating-linear-gradient(-45deg, transparent 0px, transparent 2px, rgba(200,160,255,0.12) 2px, rgba(200,160,255,0.12) 3px),' +
+        'repeating-linear-gradient(45deg, transparent 0px, transparent 2px, rgba(160,220,255,0.09) 2px, rgba(160,220,255,0.09) 3px),' +
+        'linear-gradient(' + deg + 'deg,' +
+          'rgba(100,80,255,0.72) 0%,' +
+          'rgba(200,60,220,0.62) 18%,' +
+          'rgba(60,180,255,0.68) 36%,' +
+          'rgba(80,240,180,0.58) 52%,' +
+          'rgba(255,180,60,0.55) 68%,' +
+          'rgba(220,60,160,0.68) 84%,' +
+          'rgba(100,80,255,0.72) 100%)';
+      foil.style.filter    = 'hue-rotate(' + hue + 'deg) brightness(1.15) saturate(1.4)';
+      foil.style.opacity   = '0.70';
+      foil.style.animation = 'none';
+
+      /* specular hotspot moves exactly with cursor */
+      spec.style.background =
+        'radial-gradient(ellipse 65% 45% at ' + (x * 100) + '% ' + (y * 100) + '%,' +
+        ' rgba(255,255,255,0.95) 0%,' +
+        ' rgba(210,190,255,0.55) 25%,' +
+        ' rgba(130,210,255,0.25) 50%,' +
+        ' transparent 72%)';
+      spec.style.opacity   = '0.45';
+      spec.style.animation = 'none';
+
+      /* sparkle intensity up on hover */
+      sparkle.style.opacity   = '0.90';
+      sparkle.style.animation = 'none';
     });
 
     card.addEventListener('mouseleave', function () {
-      card.style.transform = '';
-      card.style.setProperty('--lp',    '50%');
-      card.style.setProperty('--tp',    '50%');
-      card.style.setProperty('--sx',    '50%');
-      card.style.setProperty('--sy',    '50%');
-      card.style.setProperty('--p-opc', '0.18');
+      card.style.transform   = '';
+      foil.style.cssText     = '';
+      foil.className         = 'holo-foil';
+      spec.style.cssText     = '';
+      spec.className         = 'holo-spec';
+      sparkle.style.cssText  = '';
+      sparkle.className      = 'holo-sparkle';
     });
   });
 }());
