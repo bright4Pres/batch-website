@@ -382,19 +382,21 @@ body {
 /* top info chunk in modal */
 .modal-top {
   display: grid;
-  grid-template-columns: minmax(220px, 280px) 1fr;
-  gap: 18px;
+  grid-template-columns: 1fr;
+  gap: 16px;
   padding: 20px 24px;
   border-bottom: 1px solid var(--modal-stroke);
 }
 .modal-photo-wrap {
-  height:max-content;
+  height: max-content;
   background-color: var(--modal-card);
   border: 2px solid var(--modal-stroke);
   border-radius: 14px;
   padding: 8px;
   box-shadow: 0 4px 0 rgba(0,0,0,0.05);
   position: relative;
+  margin: 0 auto;
+  width: min(360px, 100%);
 }
 .modal-photo-wrap img {
   width: 100%;
@@ -419,27 +421,49 @@ body {
 
 .modal-info {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 .modal-info h2 {
   font-family: 'Caveat', cursive;
   font-size: 2.25rem;
   color: var(--accent-dark);
-  margin-bottom: 10px;
+  margin-bottom: 0;
   line-height: 1;
+}
+.modal-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px 14px;
+}
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 .modal-info .info-label {
   display: inline-block;
-  background-color: var(--modal-panel);
-  border: 1px solid var(--modal-stroke);
-  border-radius: 999px;
-  padding: 3px 10px;
+  background: transparent;
+  border: none;
+  padding: 0 12px;
+  font-family: 'Patrick Hand', cursive;
   font-weight: 700;
-  color: var(--modal-muted);
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-top: 10px;
-  margin-bottom: 5px;
+  color: var(--accent-dark);
+  font-size: 1rem;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  margin: 0;
+  line-height: 1.1;
+}
+.modal-info .info-label::after {
+  content: '';
+  display: block;
+  width: 26px;
+  height: 3px;
+  border-radius: 999px;
+  background-color: var(--accent-light);
+  margin-top: 4px;
 }
 .modal-info .info-text {
   background-color: var(--modal-card);
@@ -470,6 +494,7 @@ body {
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  align-self: flex-start;
 }
 
 /* tabs: comment vs private */
@@ -945,7 +970,7 @@ body {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 24px;
   }
-  .modal-top { grid-template-columns: minmax(200px, 240px) 1fr; }
+  .modal-top { grid-template-columns: 1fr; }
   .modal-photo-wrap img { height: 260px; }
 }
 
