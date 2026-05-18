@@ -15,11 +15,11 @@ var gl = c.getContext( 'webgl', { preserveDrawingBuffer: true } )
 		xFriction: .995,
 		baseShardVel: 1,
 		addedShardVel: .2,
-		fireworks: 50,
+		fireworks: 80,
 		baseShardsParFirework: 6,
 		addedShardsParFirework: 6,
 		shardTrailLength: 15,
-		shardTTL: 70,
+		shardTTL: 100,
 		shardFireworkVelMultiplier: .6,
 		initHueMultiplier: 1/360,
 		runHueAdder: .1/360
