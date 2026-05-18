@@ -9,6 +9,14 @@
   <link rel="stylesheet" href="{% static 'Scripts/section.css' %}">
   <link rel="icon" href="{% static 'antuilanlogo.png' %}">
   <style>
+  canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: transparent;
+  z-index: 2;
+	pointer-events: none;
+}
   .bastasa-fire {
     position: absolute;
     left: 0;
@@ -198,6 +206,7 @@
   </style>
 </head>
 <body class="section-tesla">
+<canvas id="c"></canvas>
 
 <!-- nav bar + section links -->
 <nav class="section-topnav">
@@ -993,5 +1002,6 @@ function formatDate(iso) {
   cards.forEach(function (c) { io.observe(c); });
 }());
 </script>
+<script src="../static/Scripts/fireworks.js"> </script>
 </body>
 </html>

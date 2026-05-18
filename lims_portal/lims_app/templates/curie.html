@@ -8,8 +8,19 @@
   <link rel="stylesheet" href="https://public.codepenassets.com/css/normalize-5.0.0.min.css">
   <link rel="stylesheet" href="{% static 'Scripts/section.css' %}">
   <link rel="icon" href="{% static 'antuilanlogo.png' %}">
+  <style>
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: transparent;
+    z-index: 2;
+    pointer-events: none;
+  }
+  </style>
 </head>
 <body class="section-curie">
+<canvas id="c"></canvas>
 
 <!-- nav bar + section links -->
 <nav class="section-topnav">
@@ -439,5 +450,6 @@ function formatDate(iso) {
   cards.forEach(function (c) { io.observe(c); });
 }());
 </script>
+<script src="../static/Scripts/fireworks.js"> </script>
 </body>
 </html>

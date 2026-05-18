@@ -152,6 +152,7 @@ body {
   text-align: center;
   padding: 50px 20px 30px;
   position: relative;
+  z-index: 1;
 }
 .section-hero h1 {
   font-family: 'Caveat', cursive;
@@ -199,6 +200,8 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 28px;
+  position: relative;
+  z-index: 1;
 }
 
 /* polaroid card */
