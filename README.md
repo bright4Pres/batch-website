@@ -183,4 +183,4 @@ These are just flat file dumps. There's no automated restore UI, you'd have to m
 
 ## Authors
 
-Project eTala -- batch Antuilan, PSHS-ZRC. Built under the SCALE Program with guidance from the Campus Librarian and Computer Science advisers.
+Bright R. Bastasa - Former Student of Philippine Science High School under Project eTala
